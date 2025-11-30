@@ -17,8 +17,8 @@
             font-family: 'Times New Roman', serif, "微軟正黑體";
             margin: 0;
             padding: 0;
-            /* 背景圖片 */
-            background-image: url('images/bg_hogwarts_transparent.png');
+            /* 修正：移除 images/ 並改成大寫 .PNG */
+            background-image: url('bg_hogwarts_transparent.PNG');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -102,7 +102,6 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            /* 羊皮紙紋理 */
             background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
             border: 8px solid transparent;
             border-image: url('https://i.imgur.com/wFfkI6G.png') 30 stretch;
@@ -320,16 +319,16 @@
             <div id="start-screen">
                 <h1 class="game-title">選擇你的巫師夥伴</h1>
                 <div id="character-selection">
-                    <div class="char-card" onclick="startGame('哈利波特', 'images/harry_selection.png')">
-                        <img src="images/harry_selection.png" alt="哈利波特">
+                    <div class="char-card" onclick="startGame('哈利波特', 'harry_selection.PNG')">
+                        <img src="harry_selection.PNG" alt="哈利波特">
                         <h3>哈利波特</h3>
                     </div>
-                    <div class="char-card" onclick="startGame('榮恩衛斯理', 'images/ron_selection.png')">
-                        <img src="images/ron_selection.png" alt="榮恩衛斯理">
+                    <div class="char-card" onclick="startGame('榮恩衛斯理', 'ron_selection.PNG')">
+                        <img src="ron_selection.PNG" alt="榮恩衛斯理">
                         <h3>榮恩衛斯理</h3>
                     </div>
-                    <div class="char-card" onclick="startGame('妙麗格蘭傑', 'images/hermione_selection.png')">
-                        <img src="images/hermione_selection.png" alt="妙麗格蘭傑">
+                    <div class="char-card" onclick="startGame('妙麗格蘭傑', 'hermione_selection.PNG')">
+                        <img src="hermione_selection.PNG" alt="妙麗格蘭傑">
                         <h3>妙麗格蘭傑</h3>
                     </div>
                 </div>
@@ -375,17 +374,17 @@
     </div>
 
     <script>
-        // --- 1. 圖片路徑設定 ---
+        // --- 1. 圖片路徑設定 (修正：移除 images/ 並改成大寫 .PNG) ---
         const levelRewards = [
-            { name: "衛斯理家的飛車", img: "images/reward_lv1_fordanglia.png" }, // LV 1
-            { name: "光輪兩千",       img: "images/reward_lv2_nimbus2000.png" },  // LV 2
-            { name: "隱形斗篷",       img: "images/reward_lv3_cloak.png" },       // LV 3
-            { name: "劫盜地圖",       img: "images/reward_lv4_map.png" },         // LV 4
-            { name: "鷹馬",           img: "images/reward_lv5_hippogriff.png" },  // LV 5
-            { name: "人馬",           img: "images/reward_lv6_centaur.png" },     // LV 6
-            { name: "獨角獸",         img: "images/reward_lv7_unicorn.png" },     // LV 7
-            { name: "家庭小精靈(多比)", img: "images/reward_lv8_dobby.png" },      // LV 8
-            { name: "鳳凰",           img: "images/reward_lv9_phoenix.png" }      // LV 9
+            { name: "衛斯理家的飛車", img: "reward_lv1_fordanglia.PNG" }, // LV 1
+            { name: "光輪兩千",       img: "reward_lv2_nimbus2000.PNG" },  // LV 2
+            { name: "隱形斗篷",       img: "reward_lv3_cloak.PNG" },       // LV 3
+            { name: "劫盜地圖",       img: "reward_lv4_map.PNG" },         // LV 4
+            { name: "鷹馬",           img: "reward_lv5_hippogriff.PNG" },  // LV 5
+            { name: "人馬",           img: "reward_lv6_centaur.PNG" },     // LV 6
+            { name: "獨角獸",         img: "reward_lv7_unicorn.PNG" },     // LV 7
+            { name: "家庭小精靈(多比)", img: "reward_lv8_dobby.PNG" },      // LV 8
+            { name: "鳳凰",           img: "reward_lv9_phoenix.PNG" }      // LV 9
         ];
 
         // --- 2. 題庫區 (請老師在這裡修改題目) ---
@@ -416,7 +415,7 @@
             score: 0,
             currentQuestionIndex: 0,
             questionsInCurrentLevel: [],
-            audioCtx: null // 音效合成器容器
+            audioCtx: null 
         };
 
         const sidebarAvatar = document.getElementById('current-avatar');
@@ -438,7 +437,6 @@
         // --- 4. 內建音效合成器 (Magic Sound Generator) ---
         function initAudio() {
             if (!gameState.audioCtx) {
-                // 建立音效環境
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (AudioContext) {
                     gameState.audioCtx = new AudioContext();
@@ -448,30 +446,25 @@
 
         function playMagicSparkle() {
             if (!gameState.audioCtx) return;
-            // 如果瀏覽器暫停了音效，嘗試恢復
             if (gameState.audioCtx.state === 'suspended') {
                 gameState.audioCtx.resume();
             }
 
             const ctx = gameState.audioCtx;
             const now = ctx.currentTime;
-
-            // 產生一連串高頻音，模擬星星閃爍的聲音
-            // 頻率 (Hz) 對應高音的 1, 3, 5 度音 (如 C6, E6, G6, C7)
             const tones = [880, 1109, 1318, 1760, 2093]; 
 
             tones.forEach((freq, index) => {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
 
-                osc.type = 'sine'; // 正弦波最像鐘聲
+                osc.type = 'sine';
                 osc.frequency.value = freq;
 
-                // 聲音淡出效果 (Envelop)
-                const startTime = now + (index * 0.05); // 稍微錯開時間
+                const startTime = now + (index * 0.05);
                 const duration = 0.5;
 
-                gain.gain.setValueAtTime(0.05, startTime); // 音量
+                gain.gain.setValueAtTime(0.05, startTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
 
                 osc.connect(gain);
@@ -485,9 +478,7 @@
         // --- 5. 流程控制 ---
 
         function startGame(name, avatarPath) {
-            // 初始化音效引擎
             initAudio();
-
             gameState.playerName = name;
             sidebarAvatar.src = avatarPath;
             sidebarName.textContent = gameState.playerName;
@@ -615,7 +606,7 @@
                 const reward = levelRewards[rewardIndex];
                 rewardImg.src = reward.img;
                 rewardName.textContent = reward.name;
-                triggerMagicEffect(); // 觸發音效和星星
+                triggerMagicEffect(); 
             }
         }
 
@@ -632,10 +623,7 @@
         }
 
         function triggerMagicEffect() {
-            // 1. 播放合成音效
             playMagicSparkle();
-
-            // 2. 產生星星動畫
             for (let i = 0; i < 20; i++) {
                 setTimeout(createStar, i * 100);
             }
@@ -666,7 +654,7 @@
             if (isShowingInstruction) {
                 instructionScreen.style.display = 'none';
                 if (winScreen.style.display === 'block') {
-                    // 維持在獲勝畫面
+                    
                 } else if (gameState.playerName === "訪客") {
                     startScreen.style.display = 'block';
                     scrollContainer.style.justifyContent = 'center';
