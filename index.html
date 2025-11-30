@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>霍格華茲魔法挑戰</title>
+    <title>霍格華茲魔法挑戰 - 教師出題版</title>
     <style>
         /* --- 視覺樣式設定 --- */
         :root {
-            --primary-color: #4a3f35; /* 深羊皮紙色 */
-            --secondary-color: #f8e7b9; /* 亮羊皮紙色 */
+            --primary-color: #2c241b; /* 更深的羊皮紙墨色 */
+            --secondary-color: #f8e7b9;
             --accent-color: #740001; /* 葛來分多紅 */
+            --hogwarts-gold: #d4af37;
             --sidebar-width: 250px;
         }
 
@@ -17,12 +18,11 @@
             font-family: 'Times New Roman', serif, "微軟正黑體";
             margin: 0;
             padding: 0;
-            /* 修正：移除 images/ 並改成大寫 .PNG */
             background-image: url('bg_hogwarts_transparent.PNG');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-color: #f0f0f0;
+            background-color: #1a1a1a;
             height: 100vh;
             display: flex;
             overflow: hidden;
@@ -31,22 +31,22 @@
         /* 左側邊欄 */
         #sidebar {
             width: var(--sidebar-width);
-            background-color: rgba(60, 47, 47, 0.95);
+            background-color: rgba(30, 20, 20, 0.95);
             color: var(--secondary-color);
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
-            border-right: 3px solid var(--accent-color);
-            z-index: 10;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+            border-right: 4px solid var(--accent-color);
+            z-index: 20;
         }
 
         .avatar-container {
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            border: 4px solid var(--accent-color);
+            border: 4px solid var(--hogwarts-gold);
             overflow: hidden;
             margin-bottom: 20px;
             background-color: #fff;
@@ -63,24 +63,24 @@
 
         .player-info {
             text-align: center;
-            margin-bottom: 30px;
             width: 100%;
         }
 
         .player-info h2 {
             margin: 10px 0;
             font-size: 1.8em;
-            color: #ffd700;
-            text-shadow: 1px 1px 2px #000;
+            color: var(--hogwarts-gold);
+            text-shadow: 2px 2px 4px #000;
         }
 
-        .level-indicator, .score-board {
-            font-size: 1.3em;
-            font-weight: bold;
-            margin-bottom: 15px;
-            background: rgba(0,0,0,0.3);
-            padding: 5px 10px;
-            border-radius: 5px;
+        .stats-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1.2em;
+            border: 1px solid var(--accent-color);
         }
 
         /* 主畫面區 */
@@ -96,140 +96,135 @@
         /* 羊皮紙卷軸容器 */
         .scroll-container {
             background-color: var(--secondary-color);
-            width: 85%;
-            max-width: 900px;
-            min-height: 600px;
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
             background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
-            border: 8px solid transparent;
+            border: 10px solid transparent;
             border-image: url('https://i.imgur.com/wFfkI6G.png') 30 stretch;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow-y: auto; /* 允許內容過長時捲動 */
         }
 
         h1.game-title {
-            color: var(--primary-color);
+            color: var(--accent-color);
             text-align: center;
-            font-size: 3em;
-            margin-bottom: 40px;
+            font-size: 3.5em;
+            margin-bottom: 30px;
             font-weight: bold;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
         }
 
-        /* 角色選擇卡片 */
+        /* 角色選擇 */
         #character-selection {
             display: flex;
-            gap: 30px;
+            gap: 40px;
             justify-content: center;
-            width: 100%;
             flex-wrap: wrap;
         }
 
         .char-card {
-            width: 200px;
+            width: 220px;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s;
             background: rgba(255,255,255,0.4);
-            padding: 15px;
-            border-radius: 15px;
-            border: 2px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px solid var(--primary-color);
         }
 
         .char-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
-            background: rgba(255,255,255,0.7);
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.4);
+            background: #fff;
+            border-color: var(--accent-color);
         }
 
         .char-card img {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: contain;
             border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .char-card h3 {
-            color: var(--primary-color);
-            font-size: 1.5em;
-            margin: 0;
+            margin-bottom: 15px;
         }
 
         /* 答題區 */
-        #quiz-area, #win-screen, #teacher-instruction {
+        #quiz-area, #win-screen {
             display: none;
             width: 100%;
             text-align: center;
+            height: 100%; /* 充滿卷軸 */
+            justify-content: center;
+            flex-direction: column;
         }
 
         .question-text {
-            font-size: 2.2em;
+            font-size: 2.5em;
             color: var(--primary-color);
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             font-weight: bold;
-            line-height: 1.4;
+            line-height: 1.5;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
         }
 
-        /* 選項按鈕區 */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-bottom: 20px;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
+            gap: 30px;
+            width: 90%;
+            margin: 0 auto;
         }
 
         .option-btn, .action-btn {
-            padding: 20px;
-            font-size: 1.5em;
+            padding: 25px;
+            font-size: 1.6em;
             border: 4px solid var(--primary-color);
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.6);
             color: var(--primary-color);
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 15px;
             font-family: inherit;
             font-weight: bold;
             transition: all 0.2s;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
         }
 
         .option-btn:hover, .action-btn:hover {
             background-color: var(--primary-color);
             color: var(--secondary-color);
-            transform: scale(1.02);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 0 rgba(0,0,0,0.2);
         }
 
-        /* 輸入框樣式 */
+        .option-btn:active, .action-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
         .input-answer {
-            padding: 15px;
-            font-size: 1.8em;
+            padding: 20px;
+            font-size: 2em;
             width: 60%;
-            margin-bottom: 20px;
             border: 4px solid var(--primary-color);
-            background-color: #fff;
+            border-radius: 15px;
             text-align: center;
-            border-radius: 10px;
+            background: #fff;
         }
 
-        #feedback-message {
-            min-height: 40px;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        /* 獲勝畫面與獎勵圖 */
+        /* 獲勝與獎勵 */
         .reward-image-container {
             position: relative;
-            width: 60%;
-            height: 350px;
-            margin: 10px auto;
+            width: 70%;
+            height: 400px;
+            margin: 20px auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -239,66 +234,117 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 0 20px gold);
+            filter: drop-shadow(0 0 30px gold);
             animation: float 3s ease-in-out infinite;
         }
 
         @keyframes float {
-            0% { transform: translateY(0px); }
+            0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
         }
 
         /* 魔法星星特效 */
         .magic-star {
             position: absolute;
-            font-size: 30px;
+            font-size: 40px;
             pointer-events: none;
-            animation: magic-swoosh 1s ease-out forwards;
-            opacity: 0;
-            z-index: 20;
+            animation: star-anim 1s ease-out forwards;
+            z-index: 100;
         }
 
-        @keyframes magic-swoosh {
-            0% { opacity: 1; transform: translate(0, 0) scale(0.5) rotate(0deg); }
+        @keyframes star-anim {
+            0% { opacity: 1; transform: scale(0.5) rotate(0deg); }
             100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); }
         }
 
-        /* 老師說明按鈕 */
-        .instruction-toggle {
+        /* ==================== 老師出題後台樣式 ==================== */
+        .teacher-btn {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.6);
-            border: 2px solid var(--primary-color);
+            background: var(--accent-color);
+            color: #fff;
+            border: 2px solid #fff;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
-            color: var(--primary-color);
-            z-index: 5;
+            z-index: 50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         
-        .instruction-content {
-            text-align: left;
-            font-size: 1.2em;
-            line-height: 1.8;
-            max-height: 500px;
+        #teacher-panel {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
             overflow-y: auto;
-            padding: 30px;
-            background: rgba(255,255,255,0.4);
+            color: #fff;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .panel-content {
+            background: #fff;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
             border-radius: 10px;
+            border: 5px solid var(--accent-color);
         }
-        .instruction-content code {
-            background-color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-            color: #d32f2f;
+
+        .level-editor {
+            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-color);
         }
+
+        .level-editor h3 { margin-top: 0; color: var(--accent-color); }
+
+        textarea.question-input {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 1.1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .code-output {
+            background: #222;
+            color: #0f0;
+            padding: 15px;
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .help-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #2196f3;
+        }
+        .help-box code { background: #fff; padding: 2px 5px; font-weight: bold; color: #d32f2f; }
+        
+        /* 隱藏捲軸但可捲動 */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #333; }
+        ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 5px; }
+
     </style>
 </head>
 <body>
+
+    <button class="teacher-btn" onclick="toggleTeacherPanel()">📝 老師出題模式</button>
 
     <div id="sidebar">
         <div class="avatar-container">
@@ -306,14 +352,13 @@
         </div>
         <div class="player-info">
             <h2 id="player-name">訪客</h2>
-            <div class="level-indicator">Level <span id="current-level">1</span></div>
-            <div class="score-board">分數: <span id="current-score">0</span></div>
+            <div class="stats-box">關卡: <span id="current-level" style="color:#ffd700">1</span></div>
+            <div class="stats-box">分數: <span id="current-score" style="color:#ffd700">0</span></div>
+            <div id="target-reward" style="margin-top:20px; font-size:0.9em; opacity:0.8">目標：衛斯理家的飛車</div>
         </div>
     </div>
 
     <div id="main-content">
-        <button class="instruction-toggle" onclick="toggleInstructions()">給老師的出題說明</button>
-
         <div class="scroll-container">
             
             <div id="start-screen">
@@ -335,80 +380,100 @@
             </div>
 
             <div id="quiz-area">
-                <h2 id="level-title" style="color: var(--accent-color); margin-bottom: 20px;">關卡 1</h2>
-                <div id="question-container">
-                    <p class="question-text" id="q-text">題目載入中...</p>
-                    <div id="options-area" class="options-grid"></div>
+                <div style="width:100%">
+                    <h2 id="level-title" style="color: var(--accent-color); font-size:1.5em; margin-bottom: 20px;">關卡 1</h2>
+                    <div id="question-container">
+                        <p class="question-text" id="q-text">題目載入中...</p>
+                        <div id="options-area" class="options-grid"></div>
+                    </div>
+                    <p id="feedback-message" style="height:40px; font-size:1.5em; font-weight:bold; margin-top:20px;"></p>
                 </div>
-                <p id="feedback-message"></p>
             </div>
 
             <div id="win-screen">
-                <h2 style="font-size: 2.5em; color: var(--accent-color);">挑戰成功！</h2>
-                <p style="font-size: 1.5em;">獲得魔法物品：</p>
-                
+                <h2 style="font-size: 3em; color: var(--accent-color); margin: 0;">挑戰成功！</h2>
+                <p style="font-size: 1.5em; margin: 10px;">獲得魔法物品：</p>
                 <div class="reward-image-container" id="reward-container">
                     <img id="reward-img" class="reward-image" src="" alt="獎勵">
                 </div>
-                
-                <h3 id="reward-name" style="font-size: 2em; color: var(--primary-color); margin: 10px 0;"></h3>
-                <button class="action-btn" onclick="nextLevel()">前往下一關</button>
-            </div>
-
-             <div id="teacher-instruction">
-                <h1 style="color: var(--accent-color);">出題器說明</h1>
-                <div class="instruction-content">
-                    <p>老師您好，請在程式碼下方的 <code>questionBank</code> 區域依照格式輸入題目。</p>
-                    <p><strong>1. 填空/簡答題 (無選項)</strong><br>
-                    格式: <code>"題目=正確答案"</code><br>
-                    範例: <code>"9x9=?=81"</code></p>
-                    
-                    <p><strong>2. 選擇題 (自動產生按鈕)</strong><br>
-                    格式: <code>"題目=正確選項=錯誤1,錯誤2,錯誤3"</code><br>
-                    範例: <code>"蘋果的中文?=píngguǒ=píngguō,bíngguǒ"</code></p>
-                </div>
-                <button class="action-btn" onclick="toggleInstructions()">返回遊戲</button>
+                <h3 id="reward-name" style="font-size: 2.5em; color: var(--primary-color); margin: 10px 0;"></h3>
+                <button class="action-btn" onclick="nextLevel()">前往下一關 ➡️</button>
             </div>
 
         </div>
     </div>
 
+    <div id="teacher-panel">
+        <div class="panel-content">
+            <h1 style="color: var(--primary-color); text-align:center;">🧙‍♂️ 霍格華茲出題系統</h1>
+            
+            <div class="help-box">
+                <h3>📜 出題規則說明</h3>
+                <p>請在下方對應的關卡輸入題目，<strong>每一行代表一題</strong>。格式如下：</p>
+                <ul>
+                    <li><strong>選擇題 (前面題目，中間答案，後面錯誤選項)：</strong><br>
+                        <code>題目內容=正確答案=錯誤1,錯誤2,錯誤3</code><br>
+                        <em>範例：</em> <code>我很喜歡___家人一起看電影=跟=給,對,向</code>
+                    </li>
+                    <li><strong>問答/填空/數學題 (無選項)：</strong><br>
+                        <code>題目內容=正確答案</code><br>
+                        <em>範例：</em> <code>9x9=?=81</code><br>
+                        <em>範例：</em> <code>中文拼音: 中文=zhōngwén</code>
+                    </li>
+                </ul>
+                <p>※ 老師每個關卡可以輸入 1 到 10 題，系統會隨機出題。</p>
+            </div>
+
+            <div id="editors-container">
+                </div>
+
+            <div style="text-align: center; margin-top: 30px; padding: 20px; background: #eee; border-radius: 10px;">
+                <h2 style="color: #d32f2f;">⚠️ 儲存步驟 (非常重要)</h2>
+                <button class="action-btn" style="background: var(--accent-color); color: white;" onclick="generateConfigCode()">1. 點此生成程式碼</button>
+                <br><br>
+                <p>2. 生成後，請全選並複製下方黑框內的代碼。</p>
+                <p>3. 回到 GitHub 編輯 <code>index.html</code>，找到最下方的 <code>let questionBank = ...</code> 區塊，將其替換。</p>
+                <textarea id="output-code" class="code-output" readonly placeholder="點擊按鈕後，程式碼會出現在這裡..."></textarea>
+            </div>
+
+            <button class="action-btn" style="margin-top:20px; width:100%" onclick="toggleTeacherPanel()">關閉出題視窗</button>
+        </div>
+    </div>
+
     <script>
-        // --- 1. 圖片路徑設定 (修正：移除 images/ 並改成大寫 .PNG) ---
+        // --- 關卡與獎勵設定 ---
         const levelRewards = [
-            { name: "衛斯理家的飛車", img: "reward_lv1_fordanglia.PNG" }, // LV 1
-            { name: "光輪兩千",       img: "reward_lv2_nimbus2000.PNG" },  // LV 2
-            { name: "隱形斗篷",       img: "reward_lv3_cloak.PNG" },       // LV 3
-            { name: "劫盜地圖",       img: "reward_lv4_map.PNG" },         // LV 4
-            { name: "鷹馬",           img: "reward_lv5_hippogriff.PNG" },  // LV 5
-            { name: "人馬",           img: "reward_lv6_centaur.PNG" },     // LV 6
-            { name: "獨角獸",         img: "reward_lv7_unicorn.PNG" },     // LV 7
-            { name: "家庭小精靈(多比)", img: "reward_lv8_dobby.PNG" },      // LV 8
-            { name: "鳳凰",           img: "reward_lv9_phoenix.PNG" }      // LV 9
+            { name: "衛斯理家的飛車", img: "reward_lv1_fordanglia.PNG" }, 
+            { name: "光輪兩千",       img: "reward_lv2_nimbus2000.PNG" },  
+            { name: "隱形斗篷",       img: "reward_lv3_cloak.PNG" },       
+            { name: "劫盜地圖",       img: "reward_lv4_map.PNG" },         
+            { name: "鷹馬",           img: "reward_lv5_hippogriff.PNG" },  
+            { name: "人馬",           img: "reward_lv6_centaur.PNG" },     
+            { name: "獨角獸",         img: "reward_lv7_unicorn.PNG" },     
+            { name: "家庭小精靈(多比)", img: "reward_lv8_dobby.PNG" },      
+            { name: "鳳凰",           img: "reward_lv9_phoenix.PNG" }      
         ];
 
-        // --- 2. 題庫區 (請老師在這裡修改題目) ---
-        const questionBank = {
-            1: [ 
-                "2 x 3 = ?=6",
-                "哈利波特的貓頭鷹叫什麼名字？=黑美=斑斑,阿辣哥",
-                "中文拼音: 學校=xuéxiào=xüéxiào,xuéxiao"
+        // =========================================================================
+        // ▼▼▼ 老師出題區 (這裡就是你要替換的地方) ▼▼▼
+        let questionBank = {
+            1: [
+                "9x9=?=81",
+                "中文=zhōngwén",
+                "我很喜歡___家人一起看電影=跟=給,對,向"
             ],
-            2: [ 
-                "5 x 5 = ?=25",
-                "9 x 9 = ?=81",
-                "榮恩有幾個哥哥？=5個=3個,7個"
-            ],
-            3: ["3+3=6"],
-            4: ["4+4=8"],
-            5: ["5+5=10"],
-            6: ["6+6=12"],
-            7: ["7+7=14"],
-            8: ["8+8=16"],
-            9: ["9+9=18"]
+            2: ["2+2=?=4"],
+            3: ["3+3=?=6"],
+            4: ["4+4=?=8"],
+            5: ["5+5=?=10"],
+            6: ["6+6=?=12"],
+            7: ["7+7=?=14"],
+            8: ["8+8=?=16"],
+            9: ["9+9=?=18"]
         };
+        // ▲▲▲ 老師出題區結束 ▲▲▲
+        // =========================================================================
 
-        // --- 3. 遊戲邏輯 ---
         let gameState = {
             playerName: "訪客",
             level: 1,
@@ -422,61 +487,106 @@
         const sidebarName = document.getElementById('player-name');
         const sidebarLevel = document.getElementById('current-level');
         const sidebarScore = document.getElementById('current-score');
+        const targetRewardLabel = document.getElementById('target-reward');
+        
         const startScreen = document.getElementById('start-screen');
         const quizArea = document.getElementById('quiz-area');
         const winScreen = document.getElementById('win-screen');
-        const instructionScreen = document.getElementById('teacher-instruction');
+        
         const questionText = document.getElementById('q-text');
         const optionsArea = document.getElementById('options-area');
         const feedbackMessage = document.getElementById('feedback-message');
+        
         const rewardImg = document.getElementById('reward-img');
         const rewardName = document.getElementById('reward-name');
         const rewardContainer = document.getElementById('reward-container');
-        const scrollContainer = document.querySelector('.scroll-container');
 
-        // --- 4. 內建音效合成器 (Magic Sound Generator) ---
-        function initAudio() {
-            if (!gameState.audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) {
-                    gameState.audioCtx = new AudioContext();
-                }
-            }
-        }
-
-        function playMagicSparkle() {
-            if (!gameState.audioCtx) return;
-            if (gameState.audioCtx.state === 'suspended') {
-                gameState.audioCtx.resume();
-            }
-
-            const ctx = gameState.audioCtx;
-            const now = ctx.currentTime;
-            const tones = [880, 1109, 1318, 1760, 2093]; 
-
-            tones.forEach((freq, index) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-
-                const startTime = now + (index * 0.05);
-                const duration = 0.5;
-
-                gain.gain.setValueAtTime(0.05, startTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(startTime);
-                osc.stop(startTime + duration);
+        // --- 初始化老師後台介面 ---
+        function initTeacherPanel() {
+            const container = document.getElementById('editors-container');
+            container.innerHTML = "";
+            levelRewards.forEach((reward, index) => {
+                const level = index + 1;
+                const questions = questionBank[level] ? questionBank[level].join('\n') : "";
+                
+                const html = `
+                    <div class="level-editor">
+                        <h3>第 ${level} 關：${reward.name}</h3>
+                        <textarea id="input-lv-${level}" class="question-input" placeholder="請輸入題目...">${questions}</textarea>
+                    </div>
+                `;
+                container.innerHTML += html;
             });
         }
 
-        // --- 5. 流程控制 ---
+        function toggleTeacherPanel() {
+            const panel = document.getElementById('teacher-panel');
+            if(panel.style.display === 'block') {
+                panel.style.display = 'none';
+            } else {
+                initTeacherPanel(); // 打開時重新讀取目前題目
+                panel.style.display = 'block';
+            }
+        }
 
+        // --- 生成代碼功能 ---
+        function generateConfigCode() {
+            let outputObj = {};
+            for(let i=1; i<=9; i++) {
+                const rawText = document.getElementById(`input-lv-${i}`).value;
+                // 過濾空行
+                const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
+                if(lines.length > 0) {
+                    outputObj[i] = lines;
+                }
+            }
+
+            const jsonStr = JSON.stringify(outputObj, null, 4);
+            const finalCode = `let questionBank = ${jsonStr};`;
+            
+            document.getElementById('output-code').value = finalCode;
+            document.getElementById('output-code').select();
+            // 嘗試自動複製
+            try {
+                document.execCommand('copy');
+                alert("代碼已生成並複製！請回 GitHub 貼上。");
+            } catch (err) {
+                alert("代碼已生成，請手動複製下方黑框內容。");
+            }
+        }
+
+        // --- 音效功能 ---
+        function initAudio() {
+            if (!gameState.audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) gameState.audioCtx = new AudioContext();
+            }
+        }
+
+        function playMagicSound() {
+            if (!gameState.audioCtx) return;
+            if (gameState.audioCtx.state === 'suspended') gameState.audioCtx.resume();
+            const ctx = gameState.audioCtx;
+            const now = ctx.currentTime;
+            
+            // 魔法音效 (星星閃爍感)
+            [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + i*0.1);
+                
+                gain.gain.setValueAtTime(0.05, now + i*0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i*0.1 + 0.8);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + i*0.1);
+                osc.stop(now + i*0.1 + 0.8);
+            });
+        }
+
+        // --- 遊戲流程 ---
         function startGame(name, avatarPath) {
             initAudio();
             gameState.playerName = name;
@@ -484,8 +594,7 @@
             sidebarName.textContent = gameState.playerName;
             
             startScreen.style.display = 'none';
-            quizArea.style.display = 'block';
-            scrollContainer.style.justifyContent = 'flex-start';
+            quizArea.style.display = 'flex'; // 使用 flex 讓內容置中
             loadLevel(1);
         }
 
@@ -494,11 +603,25 @@
             gameState.currentQuestionIndex = 0;
             sidebarLevel.textContent = level;
             
-            const rewardNameText = levelRewards[level-1] ? levelRewards[level-1].name : "";
-            document.getElementById('level-title').textContent = `關卡 ${level}：目標 - ${rewardNameText}`;
+            const rewardNameText = levelRewards[level-1] ? levelRewards[level-1].name : "???";
+            targetRewardLabel.textContent = `目標：${rewardNameText}`;
+            document.getElementById('level-title').textContent = `關卡 ${level} - 挑戰目標：${rewardNameText}`;
 
-            const rawQuestions = questionBank[level] || ["本關卡通過！=Pass"];
-            gameState.questionsInCurrentLevel = rawQuestions.map(parseQuestionStr);
+            // 從題庫讀取，如果沒有就給預設
+            const rawQuestions = questionBank[level];
+            if(!rawQuestions || rawQuestions.length === 0) {
+                gameState.questionsInCurrentLevel = [{text: "本關卡老師尚未出題，點擊確認通關", correct: "Pass", type: "input", options:[]}];
+            } else {
+                gameState.questionsInCurrentLevel = rawQuestions.map(parseQuestionStr);
+                // 隨機打亂題目順序 (讓每次玩都不一樣)
+                gameState.questionsInCurrentLevel = shuffleArray(gameState.questionsInCurrentLevel);
+            }
+            
+            // 如果老師出超過10題，只取前10題
+            if(gameState.questionsInCurrentLevel.length > 10) {
+                gameState.questionsInCurrentLevel = gameState.questionsInCurrentLevel.slice(0, 10);
+            }
+
             loadNextQuestion();
         }
 
@@ -528,7 +651,10 @@
             }
 
             const currentQ = gameState.questionsInCurrentLevel[gameState.currentQuestionIndex];
-            questionText.innerHTML = currentQ.text.replace(/___/g, '<span style="text-decoration: underline; margin: 0 5px;">____</span>');
+            
+            // 處理填空底線顯示
+            let displayText = currentQ.text.replace(/___/g, '<span style="border-bottom: 3px solid var(--primary-color); display:inline-block; width:80px;">&nbsp;</span>');
+            questionText.innerHTML = displayText;
 
             if (currentQ.type === 'choice') {
                 optionsArea.className = 'options-grid';
@@ -546,45 +672,70 @@
                 optionsArea.style.flexDirection = 'column';
                 optionsArea.style.alignItems = 'center';
                 
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'input-answer';
-                input.placeholder = '請輸入答案';
-                input.id = 'answer-input';
-                input.addEventListener("keypress", function(event) {
-                    if (event.key === "Enter") checkAnswer(input.value.trim(), currentQ.correct);
-                });
-                
-                const submitBtn = document.createElement('button');
-                submitBtn.className = 'action-btn';
-                submitBtn.textContent = '確認施咒';
-                submitBtn.style.marginTop = '15px';
-                submitBtn.onclick = () => checkAnswer(input.value.trim(), currentQ.correct);
+                // 如果是 Pass 題 (老師沒出題)
+                if(currentQ.correct === "Pass") {
+                    const btn = document.createElement('button');
+                    btn.className = 'action-btn';
+                    btn.textContent = '領取獎勵';
+                    btn.onclick = () => checkAnswer("Pass", "Pass");
+                    optionsArea.appendChild(btn);
+                } else {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'input-answer';
+                    input.placeholder = '請輸入答案...';
+                    input.id = 'answer-input';
+                    input.onkeypress = (e) => { if(e.key === 'Enter') checkAnswer(input.value.trim(), currentQ.correct); };
+                    
+                    const submitBtn = document.createElement('button');
+                    submitBtn.className = 'action-btn';
+                    submitBtn.textContent = '確認咒語';
+                    submitBtn.style.marginTop = '20px';
+                    submitBtn.onclick = () => checkAnswer(input.value.trim(), currentQ.correct);
 
-                optionsArea.appendChild(input);
-                optionsArea.appendChild(submitBtn);
-                input.focus();
+                    optionsArea.appendChild(input);
+                    optionsArea.appendChild(submitBtn);
+                    input.focus();
+                }
             }
         }
 
         function checkAnswer(userAnswer, correctAnswer) {
-            if(!userAnswer) return;
+            if(!userAnswer && userAnswer !== 0) return;
+            
+            // 鎖定輸入
             const buttons = optionsArea.querySelectorAll('button');
             buttons.forEach(btn => btn.disabled = true);
             if(document.getElementById('answer-input')) document.getElementById('answer-input').disabled = true;
 
-            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase() || userAnswer === "Pass") {
+            const isCorrect = (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) || (correctAnswer === "Pass");
+
+            if (isCorrect) {
                 feedbackMessage.innerHTML = "✨ 施咒成功！答對了！ ✨";
                 feedbackMessage.style.color = "green";
-                if(userAnswer !== "Pass") gameState.score += 10;
+                playMagicSound(); // 答對也有小音效
+                
+                if(correctAnswer !== "Pass") {
+                    gameState.score += 10;
+                    // 更新分數動畫
+                    sidebarScore.style.transform = "scale(1.5)";
+                    setTimeout(()=> sidebarScore.style.transform = "scale(1)", 200);
+                }
                 sidebarScore.textContent = gameState.score;
+                
                 setTimeout(() => {
                     gameState.currentQuestionIndex++;
                     loadNextQuestion();
                 }, 1000);
             } else {
-                feedbackMessage.textContent = `💥 咒語失敗！再試一次。`;
+                feedbackMessage.innerHTML = "💥 咒語反彈！再試一次。";
                 feedbackMessage.style.color = "#d32f2f";
+                // 震動特效
+                document.querySelector('.scroll-container').style.transform = "translateX(10px)";
+                setTimeout(()=> document.querySelector('.scroll-container').style.transform = "translateX(0)", 100);
+                setTimeout(()=> document.querySelector('.scroll-container').style.transform = "translateX(-10px)", 200);
+                setTimeout(()=> document.querySelector('.scroll-container').style.transform = "translateX(0)", 300);
+
                 setTimeout(() => {
                      buttons.forEach(btn => btn.disabled = false);
                      if(document.getElementById('answer-input')) {
@@ -598,75 +749,53 @@
 
         function levelComplete() {
             quizArea.style.display = 'none';
-            winScreen.style.display = 'block';
-            scrollContainer.style.justifyContent = 'center';
-
+            winScreen.style.display = 'flex'; // 改為 flex 確保置中
+            
             const rewardIndex = gameState.level - 1;
             if (rewardIndex < levelRewards.length) {
                 const reward = levelRewards[rewardIndex];
                 rewardImg.src = reward.img;
                 rewardName.textContent = reward.name;
-                triggerMagicEffect(); 
+                
+                // 播放過關音效與特效
+                playMagicSound();
+                createStars();
             }
         }
 
         function nextLevel() {
             winScreen.style.display = 'none';
             if (gameState.level < 9) {
-                quizArea.style.display = 'block';
-                scrollContainer.style.justifyContent = 'flex-start';
+                quizArea.style.display = 'flex';
                 loadLevel(gameState.level + 1);
             } else {
-                alert(`恭喜 ${gameState.playerName}！你已通過所有霍格華茲的考驗！`);
+                alert(`恭喜 ${gameState.playerName}！你已通過所有霍格華茲的考驗，成為一名偉大的巫師！總分：${gameState.score}`);
                 location.reload();
             }
         }
 
-        function triggerMagicEffect() {
-            playMagicSparkle();
-            for (let i = 0; i < 20; i++) {
-                setTimeout(createStar, i * 100);
-            }
-        }
-
-        function createStar() {
-            const star = document.createElement('div');
-            star.className = 'magic-star';
-            star.textContent = ['✨', '⭐', '💫'][Math.floor(Math.random() * 3)];
-            star.style.color = ['gold', '#ffd700', '#fff'][Math.floor(Math.random() * 3)];
-            
-            const startX = (Math.random() - 0.5) * 50;
-            const startY = (Math.random() - 0.5) * 50;
-            const tx = (Math.random() - 0.5) * 600;
-            const ty = (Math.random() - 0.5) * 600;
-
-            star.style.left = `calc(50% + ${startX}px)`;
-            star.style.top = `calc(50% + ${startY}px)`;
-            star.style.setProperty('--tx', `${tx}px`);
-            star.style.setProperty('--ty', `${ty}px`);
-
-            rewardContainer.appendChild(star);
-            setTimeout(() => star.remove(), 1000);
-        }
-
-        function toggleInstructions() {
-            const isShowingInstruction = instructionScreen.style.display === 'block';
-            if (isShowingInstruction) {
-                instructionScreen.style.display = 'none';
-                if (winScreen.style.display === 'block') {
+        function createStars() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const star = document.createElement('div');
+                    star.className = 'magic-star';
+                    star.textContent = ['✨', '⭐', '💫'][Math.floor(Math.random() * 3)];
+                    star.style.color = ['gold', '#ffd700', '#fff', '#e0ffff'][Math.floor(Math.random() * 4)];
                     
-                } else if (gameState.playerName === "訪客") {
-                    startScreen.style.display = 'block';
-                    scrollContainer.style.justifyContent = 'center';
-                } else {
-                    quizArea.style.display = 'block';
-                    scrollContainer.style.justifyContent = 'flex-start';
-                }
-            } else {
-                startScreen.style.display = 'none';
-                quizArea.style.display = 'none';
-                instructionScreen.style.display = 'block';
-                scrollContainer.style.justifyContent = 'center';
+                    // 隨機發射位置
+                    const startX = (Math.random() - 0.5) * 100;
+                    const startY = (Math.random() - 0.5) * 100;
+                    const tx = (Math.random() - 0.5) * 800; // 擴散範圍
+                    const ty = (Math.random() - 0.5) * 800;
+
+                    star.style.left = `calc(50% + ${startX}px)`;
+                    star.style.top = `calc(50% + ${startY}px)`;
+                    star.style.setProperty('--tx', `${tx}px`);
+                    star.style.setProperty('--ty', `${ty}px`);
+
+                    rewardContainer.appendChild(star);
+                    setTimeout(() => star.remove(), 1000);
+                }, i * 50);
             }
         }
 
