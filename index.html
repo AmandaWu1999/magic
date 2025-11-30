@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霍格華茲魔法挑戰</title>
+    <style>
+        /* --- 視覺樣式設定 --- */
+        :root {
+            --primary-color: #4a3f35; /* 深羊皮紙色 */
+            --secondary-color: #f8e7b9; /* 亮羊皮紙色 */
+            --accent-color: #740001; /* 葛來分多紅 */
+            --sidebar-width: 250px;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif, "微軟正黑體";
+            margin: 0;
+            padding: 0;
+            /* 背景圖片 */
+            background-image: url('images/bg_hogwarts_transparent.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #f0f0f0;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 左側邊欄 */
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: rgba(60, 47, 47, 0.95);
+            color: var(--secondary-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            border-right: 3px solid var(--accent-color);
+            z-index: 10;
+        }
+
+        .avatar-container {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-color);
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .player-info {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .player-info h2 {
+            margin: 10px 0;
+            font-size: 1.8em;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .level-indicator, .score-board {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* 主畫面區 */
+        #main-content {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 羊皮紙卷軸容器 */
+        .scroll-container {
+            background-color: var(--secondary-color);
+            width: 85%;
+            max-width: 900px;
+            min-height: 600px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            /* 羊皮紙紋理 */
+            background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+            border: 8px solid transparent;
+            border-image: url('https://i.imgur.com/wFfkI6G.png') 30 stretch;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1.game-title {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        /* 角色選擇卡片 */
+        #character-selection {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .char-card {
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: rgba(255,255,255,0.4);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .char-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.7);
+        }
+
+        .char-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .char-card h3 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        /* 答題區 */
+        #quiz-area, #win-screen, #teacher-instruction {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 2.2em;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        /* 選項按鈕區 */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 20px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .option-btn, .action-btn {
+            padding: 20px;
+            font-size: 1.5em;
+            border: 4px solid var(--primary-color);
+            background-color: rgba(255,255,255,0.5);
+            color: var(--primary-color);
+            cursor: pointer;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover, .action-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            transform: scale(1.02);
+        }
+
+        /* 輸入框樣式 */
+        .input-answer {
+            padding: 15px;
+            font-size: 1.8em;
+            width: 60%;
+            margin-bottom: 20px;
+            border: 4px solid var(--primary-color);
+            background-color: #fff;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        #feedback-message {
+            min-height: 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* 獲勝畫面與獎勵圖 */
+        .reward-image-container {
+            position: relative;
+            width: 60%;
+            height: 350px;
+            margin: 10px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .reward-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px gold);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* 魔法星星特效 */
+        .magic-star {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: none;
+            animation: magic-swoosh 1s ease-out forwards;
+            opacity: 0;
+            z-index: 20;
+        }
+
+        @keyframes magic-swoosh {
+            0% { opacity: 1; transform: translate(0, 0) scale(0.5) rotate(0deg); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); }
+        }
+
+        /* 老師說明按鈕 */
+        .instruction-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.6);
+            border: 2px solid var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--primary-color);
+            z-index: 5;
+        }
+        
+        .instruction-content {
+            text-align: left;
+            font-size: 1.2em;
+            line-height: 1.8;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 30px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 10px;
+        }
+        .instruction-content code {
+            background-color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="avatar-container">
+            <img id="current-avatar" src="https://via.placeholder.com/140x140?text=?" alt="角色">
+        </div>
+        <div class="player-info">
+            <h2 id="player-name">訪客</h2>
+            <div class="level-indicator">Level <span id="current-level">1</span></div>
+            <div class="score-board">分數: <span id="current-score">0</span></div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <button class="instruction-toggle" onclick="toggleInstructions()">給老師的出題說明</button>
+
+        <div class="scroll-container">
+            
+            <div id="start-screen">
+                <h1 class="game-title">選擇你的巫師夥伴</h1>
+                <div id="character-selection">
+                    <div class="char-card" onclick="startGame('哈利波特', 'images/harry_selection.png')">
+                        <img src="images/harry_selection.png" alt="哈利波特">
+                        <h3>哈利波特</h3>
+                    </div>
+                    <div class="char-card" onclick="startGame('榮恩衛斯理', 'images/ron_selection.png')">
+                        <img src="images/ron_selection.png" alt="榮恩衛斯理">
+                        <h3>榮恩衛斯理</h3>
+                    </div>
+                    <div class="char-card" onclick="startGame('妙麗格蘭傑', 'images/hermione_selection.png')">
+                        <img src="images/hermione_selection.png" alt="妙麗格蘭傑">
+                        <h3>妙麗格蘭傑</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quiz-area">
+                <h2 id="level-title" style="color: var(--accent-color); margin-bottom: 20px;">關卡 1</h2>
+                <div id="question-container">
+                    <p class="question-text" id="q-text">題目載入中...</p>
+                    <div id="options-area" class="options-grid"></div>
+                </div>
+                <p id="feedback-message"></p>
+            </div>
+
+            <div id="win-screen">
+                <h2 style="font-size: 2.5em; color: var(--accent-color);">挑戰成功！</h2>
+                <p style="font-size: 1.5em;">獲得魔法物品：</p>
+                
+                <div class="reward-image-container" id="reward-container">
+                    <img id="reward-img" class="reward-image" src="" alt="獎勵">
+                </div>
+                
+                <h3 id="reward-name" style="font-size: 2em; color: var(--primary-color); margin: 10px 0;"></h3>
+                <button class="action-btn" onclick="nextLevel()">前往下一關</button>
+            </div>
+
+             <div id="teacher-instruction">
+                <h1 style="color: var(--accent-color);">出題器說明</h1>
+                <div class="instruction-content">
+                    <p>老師您好，請在程式碼下方的 <code>questionBank</code> 區域依照格式輸入題目。</p>
+                    <p><strong>1. 填空/簡答題 (無選項)</strong><br>
+                    格式: <code>"題目=正確答案"</code><br>
+                    範例: <code>"9x9=?=81"</code></p>
+                    
+                    <p><strong>2. 選擇題 (自動產生按鈕)</strong><br>
+                    格式: <code>"題目=正確選項=錯誤1,錯誤2,錯誤3"</code><br>
+                    範例: <code>"蘋果的中文?=píngguǒ=píngguō,bíngguǒ"</code></p>
+                </div>
+                <button class="action-btn" onclick="toggleInstructions()">返回遊戲</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 圖片路徑設定 ---
+        const levelRewards = [
+            { name: "衛斯理家的飛車", img: "images/reward_lv1_fordanglia.png" }, // LV 1
+            { name: "光輪兩千",       img: "images/reward_lv2_nimbus2000.png" },  // LV 2
+            { name: "隱形斗篷",       img: "images/reward_lv3_cloak.png" },       // LV 3
+            { name: "劫盜地圖",       img: "images/reward_lv4_map.png" },         // LV 4
+            { name: "鷹馬",           img: "images/reward_lv5_hippogriff.png" },  // LV 5
+            { name: "人馬",           img: "images/reward_lv6_centaur.png" },     // LV 6
+            { name: "獨角獸",         img: "images/reward_lv7_unicorn.png" },     // LV 7
+            { name: "家庭小精靈(多比)", img: "images/reward_lv8_dobby.png" },      // LV 8
+            { name: "鳳凰",           img: "images/reward_lv9_phoenix.png" }      // LV 9
+        ];
+
+        // --- 2. 題庫區 (請老師在這裡修改題目) ---
+        const questionBank = {
+            1: [ 
+                "2 x 3 = ?=6",
+                "哈利波特的貓頭鷹叫什麼名字？=黑美=斑斑,阿辣哥",
+                "中文拼音: 學校=xuéxiào=xüéxiào,xuéxiao"
+            ],
+            2: [ 
+                "5 x 5 = ?=25",
+                "9 x 9 = ?=81",
+                "榮恩有幾個哥哥？=5個=3個,7個"
+            ],
+            3: ["3+3=6"],
+            4: ["4+4=8"],
+            5: ["5+5=10"],
+            6: ["6+6=12"],
+            7: ["7+7=14"],
+            8: ["8+8=16"],
+            9: ["9+9=18"]
+        };
+
+        // --- 3. 遊戲邏輯 ---
+        let gameState = {
+            playerName: "訪客",
+            level: 1,
+            score: 0,
+            currentQuestionIndex: 0,
+            questionsInCurrentLevel: [],
+            audioCtx: null // 音效合成器容器
+        };
+
+        const sidebarAvatar = document.getElementById('current-avatar');
+        const sidebarName = document.getElementById('player-name');
+        const sidebarLevel = document.getElementById('current-level');
+        const sidebarScore = document.getElementById('current-score');
+        const startScreen = document.getElementById('start-screen');
+        const quizArea = document.getElementById('quiz-area');
+        const winScreen = document.getElementById('win-screen');
+        const instructionScreen = document.getElementById('teacher-instruction');
+        const questionText = document.getElementById('q-text');
+        const optionsArea = document.getElementById('options-area');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const rewardImg = document.getElementById('reward-img');
+        const rewardName = document.getElementById('reward-name');
+        const rewardContainer = document.getElementById('reward-container');
+        const scrollContainer = document.querySelector('.scroll-container');
+
+        // --- 4. 內建音效合成器 (Magic Sound Generator) ---
+        function initAudio() {
+            if (!gameState.audioCtx) {
+                // 建立音效環境
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    gameState.audioCtx = new AudioContext();
+                }
+            }
+        }
+
+        function playMagicSparkle() {
+            if (!gameState.audioCtx) return;
+            // 如果瀏覽器暫停了音效，嘗試恢復
+            if (gameState.audioCtx.state === 'suspended') {
+                gameState.audioCtx.resume();
+            }
+
+            const ctx = gameState.audioCtx;
+            const now = ctx.currentTime;
+
+            // 產生一連串高頻音，模擬星星閃爍的聲音
+            // 頻率 (Hz) 對應高音的 1, 3, 5 度音 (如 C6, E6, G6, C7)
+            const tones = [880, 1109, 1318, 1760, 2093]; 
+
+            tones.forEach((freq, index) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine'; // 正弦波最像鐘聲
+                osc.frequency.value = freq;
+
+                // 聲音淡出效果 (Envelop)
+                const startTime = now + (index * 0.05); // 稍微錯開時間
+                const duration = 0.5;
+
+                gain.gain.setValueAtTime(0.05, startTime); // 音量
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(startTime);
+                osc.stop(startTime + duration);
+            });
+        }
+
+        // --- 5. 流程控制 ---
+
+        function startGame(name, avatarPath) {
+            // 初始化音效引擎
+            initAudio();
+
+            gameState.playerName = name;
+            sidebarAvatar.src = avatarPath;
+            sidebarName.textContent = gameState.playerName;
+            
+            startScreen.style.display = 'none';
+            quizArea.style.display = 'block';
+            scrollContainer.style.justifyContent = 'flex-start';
+            loadLevel(1);
+        }
+
+        function loadLevel(level) {
+            gameState.level = level;
+            gameState.currentQuestionIndex = 0;
+            sidebarLevel.textContent = level;
+            
+            const rewardNameText = levelRewards[level-1] ? levelRewards[level-1].name : "";
+            document.getElementById('level-title').textContent = `關卡 ${level}：目標 - ${rewardNameText}`;
+
+            const rawQuestions = questionBank[level] || ["本關卡通過！=Pass"];
+            gameState.questionsInCurrentLevel = rawQuestions.map(parseQuestionStr);
+            loadNextQuestion();
+        }
+
+        function parseQuestionStr(qStr) {
+            const parts = qStr.split('=');
+            const qText = parts[0];
+            const correctAnswer = parts[1];
+            let type = 'input'; 
+            let options = [];
+
+            if (parts.length > 2 && parts[2].trim() !== "") {
+                type = 'choice';
+                const wrongAnswers = parts[2].split(',');
+                options = [correctAnswer, ...wrongAnswers];
+                options = shuffleArray(options);
+            }
+            return { text: qText, correct: correctAnswer, type: type, options: options };
+        }
+
+        function loadNextQuestion() {
+            feedbackMessage.textContent = '';
+            optionsArea.innerHTML = ''; 
+
+            if (gameState.currentQuestionIndex >= gameState.questionsInCurrentLevel.length) {
+                levelComplete();
+                return;
+            }
+
+            const currentQ = gameState.questionsInCurrentLevel[gameState.currentQuestionIndex];
+            questionText.innerHTML = currentQ.text.replace(/___/g, '<span style="text-decoration: underline; margin: 0 5px;">____</span>');
+
+            if (currentQ.type === 'choice') {
+                optionsArea.className = 'options-grid';
+                optionsArea.style.display = 'grid';
+                currentQ.options.forEach(option => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = option;
+                    btn.onclick = () => checkAnswer(option, currentQ.correct);
+                    optionsArea.appendChild(btn);
+                });
+            } else {
+                optionsArea.className = '';
+                optionsArea.style.display = 'flex';
+                optionsArea.style.flexDirection = 'column';
+                optionsArea.style.alignItems = 'center';
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'input-answer';
+                input.placeholder = '請輸入答案';
+                input.id = 'answer-input';
+                input.addEventListener("keypress", function(event) {
+                    if (event.key === "Enter") checkAnswer(input.value.trim(), currentQ.correct);
+                });
+                
+                const submitBtn = document.createElement('button');
+                submitBtn.className = 'action-btn';
+                submitBtn.textContent = '確認施咒';
+                submitBtn.style.marginTop = '15px';
+                submitBtn.onclick = () => checkAnswer(input.value.trim(), currentQ.correct);
+
+                optionsArea.appendChild(input);
+                optionsArea.appendChild(submitBtn);
+                input.focus();
+            }
+        }
+
+        function checkAnswer(userAnswer, correctAnswer) {
+            if(!userAnswer) return;
+            const buttons = optionsArea.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+            if(document.getElementById('answer-input')) document.getElementById('answer-input').disabled = true;
+
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase() || userAnswer === "Pass") {
+                feedbackMessage.innerHTML = "✨ 施咒成功！答對了！ ✨";
+                feedbackMessage.style.color = "green";
+                if(userAnswer !== "Pass") gameState.score += 10;
+                sidebarScore.textContent = gameState.score;
+                setTimeout(() => {
+                    gameState.currentQuestionIndex++;
+                    loadNextQuestion();
+                }, 1000);
+            } else {
+                feedbackMessage.textContent = `💥 咒語失敗！再試一次。`;
+                feedbackMessage.style.color = "#d32f2f";
+                setTimeout(() => {
+                     buttons.forEach(btn => btn.disabled = false);
+                     if(document.getElementById('answer-input')) {
+                         document.getElementById('answer-input').disabled = false;
+                         document.getElementById('answer-input').focus();
+                     }
+                     feedbackMessage.textContent = '';
+                }, 1500);
+            }
+        }
+
+        function levelComplete() {
+            quizArea.style.display = 'none';
+            winScreen.style.display = 'block';
+            scrollContainer.style.justifyContent = 'center';
+
+            const rewardIndex = gameState.level - 1;
+            if (rewardIndex < levelRewards.length) {
+                const reward = levelRewards[rewardIndex];
+                rewardImg.src = reward.img;
+                rewardName.textContent = reward.name;
+                triggerMagicEffect(); // 觸發音效和星星
+            }
+        }
+
+        function nextLevel() {
+            winScreen.style.display = 'none';
+            if (gameState.level < 9) {
+                quizArea.style.display = 'block';
+                scrollContainer.style.justifyContent = 'flex-start';
+                loadLevel(gameState.level + 1);
+            } else {
+                alert(`恭喜 ${gameState.playerName}！你已通過所有霍格華茲的考驗！`);
+                location.reload();
+            }
+        }
+
+        function triggerMagicEffect() {
+            // 1. 播放合成音效
+            playMagicSparkle();
+
+            // 2. 產生星星動畫
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createStar, i * 100);
+            }
+        }
+
+        function createStar() {
+            const star = document.createElement('div');
+            star.className = 'magic-star';
+            star.textContent = ['✨', '⭐', '💫'][Math.floor(Math.random() * 3)];
+            star.style.color = ['gold', '#ffd700', '#fff'][Math.floor(Math.random() * 3)];
+            
+            const startX = (Math.random() - 0.5) * 50;
+            const startY = (Math.random() - 0.5) * 50;
+            const tx = (Math.random() - 0.5) * 600;
+            const ty = (Math.random() - 0.5) * 600;
+
+            star.style.left = `calc(50% + ${startX}px)`;
+            star.style.top = `calc(50% + ${startY}px)`;
+            star.style.setProperty('--tx', `${tx}px`);
+            star.style.setProperty('--ty', `${ty}px`);
+
+            rewardContainer.appendChild(star);
+            setTimeout(() => star.remove(), 1000);
+        }
+
+        function toggleInstructions() {
+            const isShowingInstruction = instructionScreen.style.display === 'block';
+            if (isShowingInstruction) {
+                instructionScreen.style.display = 'none';
+                if (winScreen.style.display === 'block') {
+                    // 維持在獲勝畫面
+                } else if (gameState.playerName === "訪客") {
+                    startScreen.style.display = 'block';
+                    scrollContainer.style.justifyContent = 'center';
+                } else {
+                    quizArea.style.display = 'block';
+                    scrollContainer.style.justifyContent = 'flex-start';
+                }
+            } else {
+                startScreen.style.display = 'none';
+                quizArea.style.display = 'none';
+                instructionScreen.style.display = 'block';
+                scrollContainer.style.justifyContent = 'center';
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>
