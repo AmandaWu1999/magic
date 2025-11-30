@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>霍格華茲魔法挑戰 - 教師出題版</title>
+    <title>霍格華茲魔法挑戰</title>
     <style>
-        /* --- 視覺樣式設定 --- */
+        /* --- 視覺樣式 (維持不變) --- */
         :root {
-            --primary-color: #2c241b; /* 更深的羊皮紙墨色 */
+            --primary-color: #2c241b;
             --secondary-color: #f8e7b9;
-            --accent-color: #740001; /* 葛來分多紅 */
+            --accent-color: #740001;
             --hogwarts-gold: #d4af37;
             --sidebar-width: 250px;
         }
@@ -28,7 +28,6 @@
             overflow: hidden;
         }
 
-        /* 左側邊欄 */
         #sidebar {
             width: var(--sidebar-width);
             background-color: rgba(30, 20, 20, 0.95);
@@ -55,296 +54,56 @@
             align-items: center;
         }
 
-        .avatar-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        .player-info {
-            text-align: center;
-            width: 100%;
-        }
+        .player-info { text-align: center; width: 100%; }
+        .player-info h2 { margin: 10px 0; font-size: 1.8em; color: var(--hogwarts-gold); text-shadow: 2px 2px 4px #000; }
+        .stats-box { background: rgba(255, 255, 255, 0.1); padding: 10px; margin: 10px 0; border-radius: 8px; width: 100%; font-size: 1.2em; border: 1px solid var(--accent-color); }
 
-        .player-info h2 {
-            margin: 10px 0;
-            font-size: 1.8em;
-            color: var(--hogwarts-gold);
-            text-shadow: 2px 2px 4px #000;
-        }
+        #main-content { flex: 1; padding: 30px; display: flex; justify-content: center; align-items: center; position: relative; }
 
-        .stats-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 1.2em;
-            border: 1px solid var(--accent-color);
-        }
-
-        /* 主畫面區 */
-        #main-content {
-            flex: 1;
-            padding: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        /* 羊皮紙卷軸容器 */
         .scroll-container {
             background-color: var(--secondary-color);
-            width: 90%;
-            max-width: 1000px;
-            height: 80vh;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            width: 90%; max-width: 1000px; height: 80vh;
+            padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
             background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
-            border: 10px solid transparent;
-            border-image: url('https://i.imgur.com/wFfkI6G.png') 30 stretch;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow-y: auto; /* 允許內容過長時捲動 */
+            border: 10px solid transparent; border-image: url('https://i.imgur.com/wFfkI6G.png') 30 stretch;
+            position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto;
         }
 
-        h1.game-title {
-            color: var(--accent-color);
-            text-align: center;
-            font-size: 3.5em;
-            margin-bottom: 30px;
-            font-weight: bold;
-            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
-        }
+        h1.game-title { color: var(--accent-color); text-align: center; font-size: 3.5em; margin-bottom: 30px; font-weight: bold; text-shadow: 1px 1px 0px rgba(0,0,0,0.3); }
 
-        /* 角色選擇 */
-        #character-selection {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        #character-selection { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+        .char-card { width: 220px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.4); padding: 20px; border-radius: 20px; border: 3px solid var(--primary-color); }
+        .char-card:hover { transform: translateY(-15px) scale(1.05); box-shadow: 0 20px 30px rgba(0,0,0,0.4); background: #fff; border-color: var(--accent-color); }
+        .char-card img { width: 100%; height: 220px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
 
-        .char-card {
-            width: 220px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(255,255,255,0.4);
-            padding: 20px;
-            border-radius: 20px;
-            border: 3px solid var(--primary-color);
-        }
-
-        .char-card:hover {
-            transform: translateY(-15px) scale(1.05);
-            box-shadow: 0 20px 30px rgba(0,0,0,0.4);
-            background: #fff;
-            border-color: var(--accent-color);
-        }
-
-        .char-card img {
-            width: 100%;
-            height: 220px;
-            object-fit: contain;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        /* 答題區 */
-        #quiz-area, #win-screen {
-            display: none;
-            width: 100%;
-            text-align: center;
-            height: 100%; /* 充滿卷軸 */
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .question-text {
-            font-size: 2.5em;
-            color: var(--primary-color);
-            margin-bottom: 50px;
-            font-weight: bold;
-            line-height: 1.5;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            width: 90%;
-            margin: 0 auto;
-        }
-
-        .option-btn, .action-btn {
-            padding: 25px;
-            font-size: 1.6em;
-            border: 4px solid var(--primary-color);
-            background-color: rgba(255,255,255,0.6);
-            color: var(--primary-color);
-            cursor: pointer;
-            border-radius: 15px;
-            font-family: inherit;
-            font-weight: bold;
-            transition: all 0.2s;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
-        }
-
-        .option-btn:hover, .action-btn:hover {
-            background-color: var(--primary-color);
-            color: var(--secondary-color);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 0 rgba(0,0,0,0.2);
-        }
-
-        .option-btn:active, .action-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
-        }
-
-        .input-answer {
-            padding: 20px;
-            font-size: 2em;
-            width: 60%;
-            border: 4px solid var(--primary-color);
-            border-radius: 15px;
-            text-align: center;
-            background: #fff;
-        }
-
-        /* 獲勝與獎勵 */
-        .reward-image-container {
-            position: relative;
-            width: 70%;
-            height: 400px;
-            margin: 20px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .reward-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 30px gold);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        /* 魔法星星特效 */
-        .magic-star {
-            position: absolute;
-            font-size: 40px;
-            pointer-events: none;
-            animation: star-anim 1s ease-out forwards;
-            z-index: 100;
-        }
-
-        @keyframes star-anim {
-            0% { opacity: 1; transform: scale(0.5) rotate(0deg); }
-            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); }
-        }
-
-        /* ==================== 老師出題後台樣式 ==================== */
-        .teacher-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--accent-color);
-            color: #fff;
-            border: 2px solid #fff;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            z-index: 50;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
+        #quiz-area, #win-screen { display: none; width: 100%; text-align: center; height: 100%; justify-content: center; flex-direction: column; }
+        .question-text { font-size: 2.5em; color: var(--primary-color); margin-bottom: 50px; font-weight: bold; line-height: 1.5; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); }
         
-        #teacher-panel {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 100;
-            overflow-y: auto;
-            color: #fff;
-            padding: 40px;
-            box-sizing: border-box;
-        }
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 90%; margin: 0 auto; }
+        .option-btn, .action-btn { padding: 25px; font-size: 1.6em; border: 4px solid var(--primary-color); background-color: rgba(255,255,255,0.6); color: var(--primary-color); cursor: pointer; border-radius: 15px; font-family: inherit; font-weight: bold; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
+        .option-btn:hover, .action-btn:hover { background-color: var(--primary-color); color: var(--secondary-color); transform: translateY(-5px); box-shadow: 0 10px 0 rgba(0,0,0,0.2); }
+        .input-answer { padding: 20px; font-size: 2em; width: 60%; border: 4px solid var(--primary-color); border-radius: 15px; text-align: center; background: #fff; }
 
-        .panel-content {
-            background: #fff;
-            color: #333;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px;
-            border-radius: 10px;
-            border: 5px solid var(--accent-color);
-        }
+        .reward-image-container { position: relative; width: 70%; height: 400px; margin: 20px auto; display: flex; justify-content: center; align-items: center; }
+        .reward-image { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 0 30px gold); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .magic-star { position: absolute; font-size: 40px; pointer-events: none; animation: star-anim 1s ease-out forwards; z-index: 100; }
+        @keyframes star-anim { 0% { opacity: 1; transform: scale(0.5) rotate(0deg); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); } }
 
-        .level-editor {
-            background: #f9f9f9;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 5px solid var(--primary-color);
-        }
-
-        .level-editor h3 { margin-top: 0; color: var(--accent-color); }
-
-        textarea.question-input {
-            width: 100%;
-            height: 120px;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 1.1em;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .code-output {
-            background: #222;
-            color: #0f0;
-            padding: 15px;
-            width: 100%;
-            height: 200px;
-            font-family: monospace;
-            margin-top: 10px;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-
-        .help-box {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid #2196f3;
-        }
-        .help-box code { background: #fff; padding: 2px 5px; font-weight: bold; color: #d32f2f; }
-        
-        /* 隱藏捲軸但可捲動 */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #333; }
-        ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 5px; }
-
+        /* 老師出題樣式 */
+        .teacher-btn { position: absolute; top: 20px; right: 20px; background: var(--accent-color); color: #fff; border: 2px solid #fff; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        #teacher-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; overflow-y: auto; padding: 40px; box-sizing: border-box; }
+        .panel-content { background: #fff; color: #333; max-width: 900px; margin: 0 auto; padding: 40px; border-radius: 10px; border: 5px solid var(--accent-color); }
+        .level-editor { background: #f9f9f9; padding: 20px; margin-bottom: 20px; border-left: 5px solid var(--primary-color); }
+        textarea.question-input { width: 100%; height: 100px; padding: 10px; font-family: monospace; font-size: 1.1em; border: 1px solid #ccc; border-radius: 5px; }
+        .link-output-box { width: 100%; padding: 15px; background: #e0f7fa; border: 2px solid #006064; border-radius: 5px; margin-top: 15px; word-break: break-all; display: none; }
     </style>
 </head>
 <body>
 
-    <button class="teacher-btn" onclick="toggleTeacherPanel()">📝 老師出題模式</button>
+    <button class="teacher-btn" onclick="toggleTeacherPanel()">📝 老師出題</button>
 
     <div id="sidebar">
         <div class="avatar-container">
@@ -360,7 +119,6 @@
 
     <div id="main-content">
         <div class="scroll-container">
-            
             <div id="start-screen">
                 <h1 class="game-title">選擇你的巫師夥伴</h1>
                 <div id="character-selection">
@@ -399,49 +157,35 @@
                 <h3 id="reward-name" style="font-size: 2.5em; color: var(--primary-color); margin: 10px 0;"></h3>
                 <button class="action-btn" onclick="nextLevel()">前往下一關 ➡️</button>
             </div>
-
         </div>
     </div>
 
     <div id="teacher-panel">
         <div class="panel-content">
             <h1 style="color: var(--primary-color); text-align:center;">🧙‍♂️ 霍格華茲出題系統</h1>
-            
-            <div class="help-box">
-                <h3>📜 出題規則說明</h3>
-                <p>請在下方對應的關卡輸入題目，<strong>每一行代表一題</strong>。格式如下：</p>
-                <ul>
-                    <li><strong>選擇題 (前面題目，中間答案，後面錯誤選項)：</strong><br>
-                        <code>題目內容=正確答案=錯誤1,錯誤2,錯誤3</code><br>
-                        <em>範例：</em> <code>我很喜歡___家人一起看電影=跟=給,對,向</code>
-                    </li>
-                    <li><strong>問答/填空/數學題 (無選項)：</strong><br>
-                        <code>題目內容=正確答案</code><br>
-                        <em>範例：</em> <code>9x9=?=81</code><br>
-                        <em>範例：</em> <code>中文拼音: 中文=zhōngwén</code>
-                    </li>
-                </ul>
-                <p>※ 老師每個關卡可以輸入 1 到 10 題，系統會隨機出題。</p>
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <h3>📜 使用說明</h3>
+                <p>在下方輸入題目後，點擊「生成分享連結」。<br><strong>新版已加入壓縮技術，網址長度大幅縮短！</strong></p>
             </div>
-
-            <div id="editors-container">
-                </div>
-
+            <div id="editors-container"></div>
             <div style="text-align: center; margin-top: 30px; padding: 20px; background: #eee; border-radius: 10px;">
-                <h2 style="color: #d32f2f;">⚠️ 儲存步驟 (非常重要)</h2>
-                <button class="action-btn" style="background: var(--accent-color); color: white;" onclick="generateConfigCode()">1. 點此生成程式碼</button>
-                <br><br>
-                <p>2. 生成後，請全選並複製下方黑框內的代碼。</p>
-                <p>3. 回到 GitHub 編輯 <code>index.html</code>，找到最下方的 <code>let questionBank = ...</code> 區塊，將其替換。</p>
-                <textarea id="output-code" class="code-output" readonly placeholder="點擊按鈕後，程式碼會出現在這裡..."></textarea>
+                <button class="action-btn" style="background: var(--accent-color); color: white; width: 100%;" onclick="generateShareLink()">✨ 生成分享連結 (壓縮版) ✨</button>
+                <div id="link-result" class="link-output-box">
+                    <p>若連結還是太長，建議使用 <a href="https://bitly.com/" target="_blank">Bit.ly</a> 縮短網址。</p>
+                    <textarea id="share-url" style="width:100%; height:80px; font-size:1.1em;" readonly></textarea>
+                    <button class="option-btn" style="padding:10px; font-size:1em; margin-top:10px;" onclick="copyLink()">複製連結</button>
+                    <button class="option-btn" style="padding:10px; font-size:1em; margin-top:10px;" onclick="testLink()">直接開啟測試</button>
+                </div>
             </div>
-
-            <button class="action-btn" style="margin-top:20px; width:100%" onclick="toggleTeacherPanel()">關閉出題視窗</button>
+            <button class="action-btn" style="margin-top:20px; width:100%" onclick="toggleTeacherPanel()">關閉視窗</button>
         </div>
     </div>
 
     <script>
-        // --- 關卡與獎勵設定 ---
+        // --- 內建 LZString 壓縮庫 (精簡版) ---
+        var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",compressToEncodedURIComponent:function(e){return null==e?"":LZString._compress(e,6,function(e){return LZString._keyStr.charAt(e)})},decompressFromEncodedURIComponent:function(e){return null==e?"":""==e?null:(e=e.replace(/ /g,"+"),LZString._decompress(e.length,32,function(r){return LZString._keyStr.indexOf(e.charAt(r))}))},_compress:function(e,r,n){if(null==e)return"";var t,o,i,s={},p={},u="",c="",a="",l=2,f=3,d=2,h=[],m=0,v=0;for(i=0;i<e.length;i+=1)if(u=e.charAt(i),Object.prototype.hasOwnProperty.call(s,u)||(s[u]=f++,p[u]=!0),c=a+u,Object.prototype.hasOwnProperty.call(s,c))a=c;else{if(Object.prototype.hasOwnProperty.call(p,a)){if(a.charCodeAt(0)<256){for(t=0;d>t;t++)m<<=1,v==r-1?(v=0,h.push(n(m)),m=0):v++;for(o=a.charCodeAt(0),t=0;8>t;t++)m=m<<1|1&o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o>>=1}else{for(o=1,t=0;d>t;t++)m=m<<1|o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o=0;for(o=a.charCodeAt(0),t=0;16>t;t++)m=m<<1|1&o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o>>=1}l--,0==l&&(l=Math.pow(2,d),d++),delete p[a]}else for(o=s[a],t=0;d>t;t++)m=m<<1|1&o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o>>=1;l--,0==l&&(l=Math.pow(2,d),d++),s[c]=f++,a=String(u)}if(""!==a){if(Object.prototype.hasOwnProperty.call(p,a)){if(a.charCodeAt(0)<256){for(t=0;d>t;t++)m<<=1,v==r-1?(v=0,h.push(n(m)),m=0):v++;for(o=a.charCodeAt(0),t=0;8>t;t++)m=m<<1|1&o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o>>=1}else{for(o=1,t=0;d>t;t++)m=m<<1|o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o=0;for(o=a.charCodeAt(0),t=0;16>t;t++)m=m<<1|1&o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o>>=1}l--,0==l&&(l=Math.pow(2,d),d++),delete p[a]}else for(o=s[a],t=0;d>t;t++)m=m<<1|1&o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o>>=1;l--,0==l&&(l=Math.pow(2,d),d++)}for(o=2,t=0;d>t;t++)m=m<<1|1&o,v==r-1?(v=0,h.push(n(m)),m=0):v++,o>>=1;for(;;){if(m<<=1,v==r-1){h.push(n(m));break}v++}return h.join("")},_decompress:function(e,r,n){var t,o,i,s,p,u,c,a=[],l=4,f=4,d=3,h="",m=[],v={val:n(0),position:r,index:1};for(t=0;3>t;t+=1)a[t]=t;for(i=0,u=Math.pow(2,2),c=1;u!=c;)s=v.val&v.position,v.position>>=1,0==v.position&&(v.position=r,v.val=n(v.index++)),i|=(s>0?1:0)*c,c<<=1;switch(i){case 0:for(i=0,u=Math.pow(2,8),c=1;u!=c;)s=v.val&v.position,v.position>>=1,0==v.position&&(v.position=r,v.val=n(v.index++)),i|=(s>0?1:0)*c,c<<=1;p=String.fromCharCode(i);break;case 1:for(i=0,u=Math.pow(2,16),c=1;u!=c;)s=v.val&v.position,v.position>>=1,0==v.position&&(v.position=r,v.val=n(v.index++)),i|=(s>0?1:0)*c,c<<=1;p=String.fromCharCode(i);break;case 2:return""}for(a[3]=p,o=p,m.push(p);;){if(v.index>e)return"";for(i=0,u=Math.pow(2,d),c=1;u!=c;)s=v.val&v.position,v.position>>=1,0==v.position&&(v.position=r,v.val=n(v.index++)),i|=(s>0?1:0)*c,c<<=1;switch(p=i){case 0:for(i=0,u=Math.pow(2,8),c=1;u!=c;)s=v.val&v.position,v.position>>=1,0==v.position&&(v.position=r,v.val=n(v.index++)),i|=(s>0?1:0)*c,c<<=1;a[f++]=String.fromCharCode(i),p=f-1,l--;break;case 1:for(i=0,u=Math.pow(2,16),c=1;u!=c;)s=v.val&v.position,v.position>>=1,0==v.position&&(v.position=r,v.val=n(v.index++)),i|=(s>0?1:0)*c,c<<=1;a[f++]=String.fromCharCode(i),p=f-1,l--;break;case 2:return m.join("")}if(0==l&&(l=Math.pow(2,d),d++),a[p])h=a[p];else{if(p!==f)return null;h=o+o.charAt(0)}m.push(h),a[f++]=o+h.charAt(0),l--,0==l&&(l=Math.pow(2,d),d++),o=h}}};
+
+        // --- 設定與變數 ---
         const levelRewards = [
             { name: "衛斯理家的飛車", img: "reward_lv1_fordanglia.PNG" }, 
             { name: "光輪兩千",       img: "reward_lv2_nimbus2000.PNG" },  
@@ -454,358 +198,200 @@
             { name: "鳳凰",           img: "reward_lv9_phoenix.PNG" }      
         ];
 
-        // =========================================================================
-        // ▼▼▼ 老師出題區 (這裡就是你要替換的地方) ▼▼▼
-        let questionBank = {
-            1: [
-                "9x9=?=81",
-                "中文=zhōngwén",
-                "我很喜歡___家人一起看電影=跟=給,對,向"
-            ],
-            2: ["2+2=?=4"],
-            3: ["3+3=?=6"],
-            4: ["4+4=?=8"],
-            5: ["5+5=?=10"],
-            6: ["6+6=?=12"],
-            7: ["7+7=?=14"],
-            8: ["8+8=?=16"],
-            9: ["9+9=?=18"]
-        };
-        // ▲▲▲ 老師出題區結束 ▲▲▲
-        // =========================================================================
-
-        let gameState = {
-            playerName: "訪客",
-            level: 1,
-            score: 0,
-            currentQuestionIndex: 0,
-            questionsInCurrentLevel: [],
-            audioCtx: null 
+        let defaultQuestionBank = {
+            1: ["2x3=?=6", "哈利波特的貓頭鷹?=黑美=斑斑,愛洛"],
+            2: ["5x5=?=25", "9x9=?=81"],
+            3: ["3+3=?=6"], 4: ["4+4=?=8"], 5: ["5+5=?=10"],
+            6: ["6+6=?=12"], 7: ["7+7=?=14"], 8: ["8+8=?=16"], 9: ["9+9=?=18"]
         };
 
-        const sidebarAvatar = document.getElementById('current-avatar');
-        const sidebarName = document.getElementById('player-name');
-        const sidebarLevel = document.getElementById('current-level');
-        const sidebarScore = document.getElementById('current-score');
-        const targetRewardLabel = document.getElementById('target-reward');
-        
-        const startScreen = document.getElementById('start-screen');
-        const quizArea = document.getElementById('quiz-area');
-        const winScreen = document.getElementById('win-screen');
-        
-        const questionText = document.getElementById('q-text');
-        const optionsArea = document.getElementById('options-area');
-        const feedbackMessage = document.getElementById('feedback-message');
-        
-        const rewardImg = document.getElementById('reward-img');
-        const rewardName = document.getElementById('reward-name');
-        const rewardContainer = document.getElementById('reward-container');
+        let questionBank = JSON.parse(JSON.stringify(defaultQuestionBank));
+        let gameState = { playerName: "訪客", level: 1, score: 0, currentQuestionIndex: 0, questionsInCurrentLevel: [], audioCtx: null };
 
-        // --- 初始化老師後台介面 ---
+        // --- 初始化：解析網址參數 (含解壓縮) ---
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const qData = urlParams.get('q'); // 使用簡短參數名 q
+            
+            if (qData) {
+                try {
+                    // 解壓縮流程
+                    const jsonStr = LZString.decompressFromEncodedURIComponent(qData);
+                    if (jsonStr) {
+                        questionBank = JSON.parse(jsonStr);
+                        console.log("成功載入壓縮題目！");
+                    }
+                } catch (e) {
+                    console.error("題目解析失敗", e);
+                    alert("題目載入錯誤，使用預設題目。");
+                }
+            }
+            initTeacherPanel();
+        };
+
+        // --- 老師後台邏輯 ---
         function initTeacherPanel() {
             const container = document.getElementById('editors-container');
             container.innerHTML = "";
             levelRewards.forEach((reward, index) => {
                 const level = index + 1;
                 const questions = questionBank[level] ? questionBank[level].join('\n') : "";
-                
-                const html = `
-                    <div class="level-editor">
-                        <h3>第 ${level} 關：${reward.name}</h3>
-                        <textarea id="input-lv-${level}" class="question-input" placeholder="請輸入題目...">${questions}</textarea>
-                    </div>
-                `;
+                const html = `<div class="level-editor"><h3>第 ${level} 關：${reward.name}</h3><textarea id="input-lv-${level}" class="question-input" placeholder="請輸入題目...">${questions}</textarea></div>`;
                 container.innerHTML += html;
             });
         }
 
         function toggleTeacherPanel() {
             const panel = document.getElementById('teacher-panel');
-            if(panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                initTeacherPanel(); // 打開時重新讀取目前題目
-                panel.style.display = 'block';
-            }
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         }
 
-        // --- 生成代碼功能 ---
-        function generateConfigCode() {
+        // --- 生成連結 (含壓縮) ---
+        function generateShareLink() {
             let outputObj = {};
             for(let i=1; i<=9; i++) {
                 const rawText = document.getElementById(`input-lv-${i}`).value;
-                // 過濾空行
                 const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
-                if(lines.length > 0) {
-                    outputObj[i] = lines;
-                }
+                if(lines.length > 0) outputObj[i] = lines;
             }
 
-            const jsonStr = JSON.stringify(outputObj, null, 4);
-            const finalCode = `let questionBank = ${jsonStr};`;
+            // 壓縮流程
+            const jsonStr = JSON.stringify(outputObj);
+            const compressed = LZString.compressToEncodedURIComponent(jsonStr);
             
-            document.getElementById('output-code').value = finalCode;
-            document.getElementById('output-code').select();
-            // 嘗試自動複製
-            try {
-                document.execCommand('copy');
-                alert("代碼已生成並複製！請回 GitHub 貼上。");
-            } catch (err) {
-                alert("代碼已生成，請手動複製下方黑框內容。");
-            }
+            const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            const finalUrl = baseUrl + "?q=" + compressed;
+
+            document.getElementById('share-url').value = finalUrl;
+            document.getElementById('link-result').style.display = 'block';
         }
 
-        // --- 音效功能 ---
-        function initAudio() {
-            if (!gameState.audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) gameState.audioCtx = new AudioContext();
-            }
+        function copyLink() {
+            const copyText = document.getElementById("share-url");
+            copyText.select();
+            document.execCommand("copy");
+            alert("連結已複製！");
         }
 
+        function testLink() {
+            window.location.href = document.getElementById("share-url").value;
+        }
+
+        // --- 遊戲邏輯 ---
+        const sidebarAvatar = document.getElementById('current-avatar');
+        const sidebarName = document.getElementById('player-name');
+        const sidebarLevel = document.getElementById('current-level');
+        const sidebarScore = document.getElementById('current-score');
+        const startScreen = document.getElementById('start-screen');
+        const quizArea = document.getElementById('quiz-area');
+        const winScreen = document.getElementById('win-screen');
+        const questionText = document.getElementById('q-text');
+        const optionsArea = document.getElementById('options-area');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const rewardImg = document.getElementById('reward-img');
+        const rewardName = document.getElementById('reward-name');
+        const rewardContainer = document.getElementById('reward-container');
+
+        function initAudio() { if (!gameState.audioCtx && (window.AudioContext || window.webkitAudioContext)) gameState.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playMagicSound() {
             if (!gameState.audioCtx) return;
             if (gameState.audioCtx.state === 'suspended') gameState.audioCtx.resume();
-            const ctx = gameState.audioCtx;
-            const now = ctx.currentTime;
-            
-            // 魔法音效 (星星閃爍感)
+            const ctx = gameState.audioCtx, now = ctx.currentTime;
             [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98].forEach((freq, i) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, now + i*0.1);
-                
-                gain.gain.setValueAtTime(0.05, now + i*0.1);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + i*0.1 + 0.8);
-                
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now + i*0.1);
-                osc.stop(now + i*0.1 + 0.8);
+                const osc = ctx.createOscillator(), gain = ctx.createGain();
+                osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + i*0.1);
+                gain.gain.setValueAtTime(0.05, now + i*0.1); gain.gain.exponentialRampToValueAtTime(0.001, now + i*0.1 + 0.8);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now + i*0.1); osc.stop(now + i*0.1 + 0.8);
             });
         }
 
-        // --- 遊戲流程 ---
         function startGame(name, avatarPath) {
-            initAudio();
-            gameState.playerName = name;
-            sidebarAvatar.src = avatarPath;
-            sidebarName.textContent = gameState.playerName;
-            
-            startScreen.style.display = 'none';
-            quizArea.style.display = 'flex'; // 使用 flex 讓內容置中
-            loadLevel(1);
+            initAudio(); gameState.playerName = name; sidebarAvatar.src = avatarPath; sidebarName.textContent = gameState.playerName;
+            startScreen.style.display = 'none'; quizArea.style.display = 'flex'; loadLevel(1);
         }
 
         function loadLevel(level) {
-            gameState.level = level;
-            gameState.currentQuestionIndex = 0;
-            sidebarLevel.textContent = level;
-            
-            const rewardNameText = levelRewards[level-1] ? levelRewards[level-1].name : "???";
-            targetRewardLabel.textContent = `目標：${rewardNameText}`;
-            document.getElementById('level-title').textContent = `關卡 ${level} - 挑戰目標：${rewardNameText}`;
-
-            // 從題庫讀取，如果沒有就給預設
+            gameState.level = level; gameState.currentQuestionIndex = 0; sidebarLevel.textContent = level;
+            document.getElementById('level-title').textContent = `關卡 ${level} - 目標：${levelRewards[level-1] ? levelRewards[level-1].name : "???"}`;
+            document.getElementById('target-reward').textContent = `目標：${levelRewards[level-1] ? levelRewards[level-1].name : "???"}`;
             const rawQuestions = questionBank[level];
-            if(!rawQuestions || rawQuestions.length === 0) {
-                gameState.questionsInCurrentLevel = [{text: "本關卡老師尚未出題，點擊確認通關", correct: "Pass", type: "input", options:[]}];
-            } else {
-                gameState.questionsInCurrentLevel = rawQuestions.map(parseQuestionStr);
-                // 隨機打亂題目順序 (讓每次玩都不一樣)
-                gameState.questionsInCurrentLevel = shuffleArray(gameState.questionsInCurrentLevel);
-            }
-            
-            // 如果老師出超過10題，只取前10題
-            if(gameState.questionsInCurrentLevel.length > 10) {
-                gameState.questionsInCurrentLevel = gameState.questionsInCurrentLevel.slice(0, 10);
-            }
-
+            gameState.questionsInCurrentLevel = (!rawQuestions || rawQuestions.length === 0) ? [{text: "本關卡通過", correct: "Pass", type: "input", options:[]}] : shuffleArray(rawQuestions.map(parseQuestionStr));
+            if(gameState.questionsInCurrentLevel.length > 10) gameState.questionsInCurrentLevel = gameState.questionsInCurrentLevel.slice(0, 10);
             loadNextQuestion();
         }
 
         function parseQuestionStr(qStr) {
             const parts = qStr.split('=');
-            const qText = parts[0];
-            const correctAnswer = parts[1];
-            let type = 'input'; 
-            let options = [];
-
-            if (parts.length > 2 && parts[2].trim() !== "") {
-                type = 'choice';
-                const wrongAnswers = parts[2].split(',');
-                options = [correctAnswer, ...wrongAnswers];
-                options = shuffleArray(options);
-            }
-            return { text: qText, correct: correctAnswer, type: type, options: options };
+            return { text: parts[0], correct: parts[1], type: (parts.length > 2 && parts[2].trim() !== "") ? 'choice' : 'input', options: (parts.length > 2) ? shuffleArray([parts[1], ...parts[2].split(',')]) : [] };
         }
 
         function loadNextQuestion() {
-            feedbackMessage.textContent = '';
-            optionsArea.innerHTML = ''; 
-
-            if (gameState.currentQuestionIndex >= gameState.questionsInCurrentLevel.length) {
-                levelComplete();
-                return;
-            }
-
+            feedbackMessage.textContent = ''; optionsArea.innerHTML = ''; 
+            if (gameState.currentQuestionIndex >= gameState.questionsInCurrentLevel.length) { levelComplete(); return; }
             const currentQ = gameState.questionsInCurrentLevel[gameState.currentQuestionIndex];
-            
-            // 處理填空底線顯示
-            let displayText = currentQ.text.replace(/___/g, '<span style="border-bottom: 3px solid var(--primary-color); display:inline-block; width:80px;">&nbsp;</span>');
-            questionText.innerHTML = displayText;
-
+            questionText.innerHTML = currentQ.text.replace(/___/g, '<span style="border-bottom: 3px solid var(--primary-color); display:inline-block; width:80px;">&nbsp;</span>');
             if (currentQ.type === 'choice') {
-                optionsArea.className = 'options-grid';
-                optionsArea.style.display = 'grid';
+                optionsArea.className = 'options-grid'; optionsArea.style.display = 'grid';
                 currentQ.options.forEach(option => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.textContent = option;
-                    btn.onclick = () => checkAnswer(option, currentQ.correct);
-                    optionsArea.appendChild(btn);
+                    const btn = document.createElement('button'); btn.className = 'option-btn'; btn.textContent = option;
+                    btn.onclick = () => checkAnswer(option, currentQ.correct); optionsArea.appendChild(btn);
                 });
             } else {
-                optionsArea.className = '';
-                optionsArea.style.display = 'flex';
-                optionsArea.style.flexDirection = 'column';
-                optionsArea.style.alignItems = 'center';
-                
-                // 如果是 Pass 題 (老師沒出題)
+                optionsArea.className = ''; optionsArea.style.display = 'flex'; optionsArea.style.flexDirection = 'column'; optionsArea.style.alignItems = 'center';
                 if(currentQ.correct === "Pass") {
-                    const btn = document.createElement('button');
-                    btn.className = 'action-btn';
-                    btn.textContent = '領取獎勵';
-                    btn.onclick = () => checkAnswer("Pass", "Pass");
-                    optionsArea.appendChild(btn);
+                    const btn = document.createElement('button'); btn.className = 'action-btn'; btn.textContent = '領取獎勵'; btn.onclick = () => checkAnswer("Pass", "Pass"); optionsArea.appendChild(btn);
                 } else {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'input-answer';
-                    input.placeholder = '請輸入答案...';
-                    input.id = 'answer-input';
+                    const input = document.createElement('input'); input.type = 'text'; input.className = 'input-answer'; input.placeholder = '請輸入答案...'; input.id = 'answer-input';
                     input.onkeypress = (e) => { if(e.key === 'Enter') checkAnswer(input.value.trim(), currentQ.correct); };
-                    
-                    const submitBtn = document.createElement('button');
-                    submitBtn.className = 'action-btn';
-                    submitBtn.textContent = '確認咒語';
-                    submitBtn.style.marginTop = '20px';
+                    const submitBtn = document.createElement('button'); submitBtn.className = 'action-btn'; submitBtn.textContent = '確認'; submitBtn.style.marginTop = '20px';
                     submitBtn.onclick = () => checkAnswer(input.value.trim(), currentQ.correct);
-
-                    optionsArea.appendChild(input);
-                    optionsArea.appendChild(submitBtn);
-                    input.focus();
+                    optionsArea.appendChild(input); optionsArea.appendChild(submitBtn); input.focus();
                 }
             }
         }
 
         function checkAnswer(userAnswer, correctAnswer) {
             if(!userAnswer && userAnswer !== 0) return;
-            
-            // 鎖定輸入
-            const buttons = optionsArea.querySelectorAll('button');
-            buttons.forEach(btn => btn.disabled = true);
+            const buttons = optionsArea.querySelectorAll('button'); buttons.forEach(btn => btn.disabled = true);
             if(document.getElementById('answer-input')) document.getElementById('answer-input').disabled = true;
-
-            const isCorrect = (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) || (correctAnswer === "Pass");
-
-            if (isCorrect) {
-                feedbackMessage.innerHTML = "✨ 施咒成功！答對了！ ✨";
-                feedbackMessage.style.color = "green";
-                playMagicSound(); // 答對也有小音效
-                
-                if(correctAnswer !== "Pass") {
-                    gameState.score += 10;
-                    // 更新分數動畫
-                    sidebarScore.style.transform = "scale(1.5)";
-                    setTimeout(()=> sidebarScore.style.transform = "scale(1)", 200);
-                }
-                sidebarScore.textContent = gameState.score;
-                
-                setTimeout(() => {
-                    gameState.currentQuestionIndex++;
-                    loadNextQuestion();
-                }, 1000);
+            if ((userAnswer.toLowerCase() === correctAnswer.toLowerCase()) || (correctAnswer === "Pass")) {
+                feedbackMessage.innerHTML = "✨ 施咒成功！答對了！ ✨"; feedbackMessage.style.color = "green"; playMagicSound();
+                if(correctAnswer !== "Pass") { gameState.score += 10; sidebarScore.textContent = gameState.score; }
+                setTimeout(() => { gameState.currentQuestionIndex++; loadNextQuestion(); }, 1000);
             } else {
-                feedbackMessage.innerHTML = "💥 咒語反彈！再試一次。";
-                feedbackMessage.style.color = "#d32f2f";
-                // 震動特效
-                document.querySelector('.scroll-container').style.transform = "translateX(10px)";
-                setTimeout(()=> document.querySelector('.scroll-container').style.transform = "translateX(0)", 100);
-                setTimeout(()=> document.querySelector('.scroll-container').style.transform = "translateX(-10px)", 200);
-                setTimeout(()=> document.querySelector('.scroll-container').style.transform = "translateX(0)", 300);
-
-                setTimeout(() => {
-                     buttons.forEach(btn => btn.disabled = false);
-                     if(document.getElementById('answer-input')) {
-                         document.getElementById('answer-input').disabled = false;
-                         document.getElementById('answer-input').focus();
-                     }
-                     feedbackMessage.textContent = '';
-                }, 1500);
+                feedbackMessage.innerHTML = "💥 咒語反彈！再試一次。"; feedbackMessage.style.color = "#d32f2f";
+                setTimeout(() => { buttons.forEach(btn => btn.disabled = false); if(document.getElementById('answer-input')) { document.getElementById('answer-input').disabled = false; document.getElementById('answer-input').focus(); } feedbackMessage.textContent = ''; }, 1500);
             }
         }
 
         function levelComplete() {
-            quizArea.style.display = 'none';
-            winScreen.style.display = 'flex'; // 改為 flex 確保置中
-            
-            const rewardIndex = gameState.level - 1;
-            if (rewardIndex < levelRewards.length) {
-                const reward = levelRewards[rewardIndex];
-                rewardImg.src = reward.img;
-                rewardName.textContent = reward.name;
-                
-                // 播放過關音效與特效
-                playMagicSound();
-                createStars();
-            }
+            quizArea.style.display = 'none'; winScreen.style.display = 'flex';
+            const reward = levelRewards[gameState.level - 1];
+            if (reward) { rewardImg.src = reward.img; rewardName.textContent = reward.name; playMagicSound(); createStars(); }
         }
 
         function nextLevel() {
             winScreen.style.display = 'none';
-            if (gameState.level < 9) {
-                quizArea.style.display = 'flex';
-                loadLevel(gameState.level + 1);
-            } else {
-                alert(`恭喜 ${gameState.playerName}！你已通過所有霍格華茲的考驗，成為一名偉大的巫師！總分：${gameState.score}`);
-                location.reload();
-            }
+            if (gameState.level < 9) { quizArea.style.display = 'flex'; loadLevel(gameState.level + 1); }
+            else { alert(`恭喜 ${gameState.playerName}！你已通過所有考驗，總分：${gameState.score}`); location.href = window.location.href.split('?')[0]; }
         }
 
         function createStars() {
             for (let i = 0; i < 30; i++) {
                 setTimeout(() => {
-                    const star = document.createElement('div');
-                    star.className = 'magic-star';
-                    star.textContent = ['✨', '⭐', '💫'][Math.floor(Math.random() * 3)];
-                    star.style.color = ['gold', '#ffd700', '#fff', '#e0ffff'][Math.floor(Math.random() * 4)];
-                    
-                    // 隨機發射位置
-                    const startX = (Math.random() - 0.5) * 100;
-                    const startY = (Math.random() - 0.5) * 100;
-                    const tx = (Math.random() - 0.5) * 800; // 擴散範圍
-                    const ty = (Math.random() - 0.5) * 800;
-
-                    star.style.left = `calc(50% + ${startX}px)`;
-                    star.style.top = `calc(50% + ${startY}px)`;
-                    star.style.setProperty('--tx', `${tx}px`);
-                    star.style.setProperty('--ty', `${ty}px`);
-
-                    rewardContainer.appendChild(star);
-                    setTimeout(() => star.remove(), 1000);
+                    const star = document.createElement('div'); star.className = 'magic-star';
+                    star.textContent = ['✨', '⭐', '💫'][Math.floor(Math.random() * 3)]; star.style.color = ['gold', '#ffd700', '#fff'][Math.floor(Math.random() * 3)];
+                    const startX = (Math.random() - 0.5) * 100; const startY = (Math.random() - 0.5) * 100;
+                    const tx = (Math.random() - 0.5) * 800; const ty = (Math.random() - 0.5) * 800;
+                    star.style.left = `calc(50% + ${startX}px)`; star.style.top = `calc(50% + ${startY}px)`;
+                    star.style.setProperty('--tx', `${tx}px`); star.style.setProperty('--ty', `${ty}px`);
+                    rewardContainer.appendChild(star); setTimeout(() => star.remove(), 1000);
                 }, i * 50);
             }
         }
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
     </script>
 </body>
 </html>
