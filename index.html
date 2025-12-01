@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>霍格華茲魔法挑戰</title>
     <style>
-        /* --- 視覺樣式 --- */
+        /* --- 視覺樣式 (維持不變) --- */
         :root {
             --primary-color: #2c241b;
             --secondary-color: #f8e7b9;
@@ -58,10 +58,11 @@
         .char-card img { width: 100%; height: 220px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
 
         #quiz-area, #win-screen { display: none; width: 100%; text-align: center; height: 100%; justify-content: center; flex-direction: column; }
-        .question-text { font-size: 2.5em; color: var(--primary-color); margin-bottom: 50px; font-weight: bold; line-height: 1.5; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); }
+        /* 調整題目字體大小，讓數學算式更清楚 */
+        .question-text { font-size: 3.5em; color: var(--primary-color); margin-bottom: 50px; font-weight: bold; line-height: 1.5; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); font-family: 'Courier New', Courier, monospace; }
         
         .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 90%; margin: 0 auto; }
-        .option-btn, .action-btn { padding: 25px; font-size: 1.6em; border: 4px solid var(--primary-color); background-color: rgba(255,255,255,0.6); color: var(--primary-color); cursor: pointer; border-radius: 15px; font-family: inherit; font-weight: bold; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
+        .option-btn, .action-btn { padding: 25px; font-size: 2em; border: 4px solid var(--primary-color); background-color: rgba(255,255,255,0.6); color: var(--primary-color); cursor: pointer; border-radius: 15px; font-family: inherit; font-weight: bold; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
         .option-btn:hover, .action-btn:hover { background-color: var(--primary-color); color: var(--secondary-color); transform: translateY(-5px); box-shadow: 0 10px 0 rgba(0,0,0,0.2); }
         .input-answer { padding: 20px; font-size: 2em; width: 60%; border: 4px solid var(--primary-color); border-radius: 15px; text-align: center; background: #fff; }
 
@@ -150,20 +151,20 @@
             <h1 style="color: var(--primary-color); text-align:center;">🧙‍♂️ 霍格華茲出題系統</h1>
             
             <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #2e7d32;">
-                <h3 style="margin-top:0; color:#1b5e20;">📖 新版出題規則 (簡單版)</h3>
-                <p>使用 <strong>等號 =</strong> 分隔。如果後面有逗號，系統會自動變成選擇題 (第一個是正確答案)。</p>
+                <h3 style="margin-top:0; color:#1b5e20;">📖 新版出題規則 (數學版)</h3>
+                <p>使用 <strong>等號 =</strong> 分隔。題目不需中文，直接寫算式即可。</p>
                 <div style="display:flex; gap:20px; flex-wrap:wrap;">
                     <div style="flex:1; background:white; padding:10px; border-radius:5px;">
                         <strong>【選擇題格式】 (推薦)</strong>
                         <p style="color:#666; font-size:0.9em;"><code>題目 = 正確答案,錯誤1,錯誤2</code></p>
-                        <p style="color:#2e7d32;">範例：<code>我喜歡___家人 = 跟,給,替,用</code></p>
-                        <p style="font-size:0.8em;">(第一個 "跟" 是正解，系統會自動打亂選項)</p>
+                        <p style="color:#2e7d32;">範例：<code>2 x 1 = ? = 2,3,4</code></p>
+                        <p style="font-size:0.8em;">(解釋：系統會自動顯示按鈕，第一個數字是正確答案)</p>
                     </div>
                     <div style="flex:1; background:white; padding:10px; border-radius:5px;">
-                        <strong>【填空/問答題格式】</strong>
+                        <strong>【填空題格式】</strong>
                         <p style="color:#666; font-size:0.9em;"><code>題目 = 正確答案</code></p>
-                        <p style="color:#2e7d32;">範例：<code>5乘5等於多少? = 25</code></p>
-                        <p style="font-size:0.8em;">(後面沒有逗號，學生必須打字輸入)</p>
+                        <p style="color:#2e7d32;">範例：<code>2 x 1 = ? = 2</code></p>
+                        <p style="font-size:0.8em;">(學生必須按鍵盤輸入數字 2)</p>
                     </div>
                 </div>
             </div>
@@ -199,7 +200,7 @@
             { name: "鳳凰",           img: "reward_lv9_phoenix.PNG" }      
         ];
 
-        // --- 預設題庫 (您圖片中的九九乘法表) ---
+        // --- 預設題庫 (九九乘法表 - 每一關對應一個數字) ---
         let defaultQuestionBank = {
             1: [ // 2的乘法 (第一關)
                 "2 x 1 = ? = 2,3,4", "2 x 2 = ? = 4,2,6", "2 x 3 = ? = 6,8,4", 
@@ -281,10 +282,6 @@
                             <div class="example-row">
                                 <span class="ex-code">2 x 1 = ? = 2,3,4</span>
                                 <span class="ex-desc">乘法選擇題</span>
-                            </div>
-                            <div class="example-row">
-                                <span class="ex-code">我喜歡___家人 = 跟,給,替</span>
-                                <span class="ex-desc">國語選擇題</span>
                             </div>
                             <div class="example-row">
                                 <span class="ex-code">1+1=? = 2</span>
@@ -378,7 +375,6 @@
             loadNextQuestion();
         }
 
-        // --- 核心邏輯修正：支援 題目=答案,錯1,錯2 ---
         function parseQuestionStr(qStr) {
             const parts = qStr.split('=');
             const qText = parts[0].trim();
