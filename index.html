@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>霍格華茲魔法挑戰</title>
     <style>
-        /* --- 視覺樣式 (維持不變) --- */
+        /* --- 視覺樣式 --- */
         :root {
             --primary-color: #2c241b;
             --secondary-color: #f8e7b9;
@@ -58,8 +58,7 @@
         .char-card img { width: 100%; height: 220px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
 
         #quiz-area, #win-screen { display: none; width: 100%; text-align: center; height: 100%; justify-content: center; flex-direction: column; }
-        /* 調整題目字體大小，讓數學算式更清楚 */
-        .question-text { font-size: 3.5em; color: var(--primary-color); margin-bottom: 50px; font-weight: bold; line-height: 1.5; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); font-family: 'Courier New', Courier, monospace; }
+        .question-text { font-size: 3.5em; color: var(--primary-color); margin-bottom: 30px; font-weight: bold; line-height: 1.5; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); font-family: 'Courier New', Courier, monospace; }
         
         .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 90%; margin: 0 auto; }
         .option-btn, .action-btn { padding: 25px; font-size: 2em; border: 4px solid var(--primary-color); background-color: rgba(255,255,255,0.6); color: var(--primary-color); cursor: pointer; border-radius: 15px; font-family: inherit; font-weight: bold; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
@@ -151,20 +150,18 @@
             <h1 style="color: var(--primary-color); text-align:center;">🧙‍♂️ 霍格華茲出題系統</h1>
             
             <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #2e7d32;">
-                <h3 style="margin-top:0; color:#1b5e20;">📖 新版出題規則 (數學版)</h3>
-                <p>使用 <strong>等號 =</strong> 分隔。題目不需中文，直接寫算式即可。</p>
+                <h3 style="margin-top:0; color:#1b5e20;">📖 重要！出題規則更新</h3>
+                <p>請<strong>不要</strong>在題目裡加上 <code>= ?</code> 或中間的等號，系統會自動幫您顯示！</p>
                 <div style="display:flex; gap:20px; flex-wrap:wrap;">
                     <div style="flex:1; background:white; padding:10px; border-radius:5px;">
-                        <strong>【選擇題格式】 (推薦)</strong>
-                        <p style="color:#666; font-size:0.9em;"><code>題目 = 正確答案,錯誤1,錯誤2</code></p>
-                        <p style="color:#2e7d32;">範例：<code>2 x 1 = ? = 2,3,4</code></p>
-                        <p style="font-size:0.8em;">(解釋：系統會自動顯示按鈕，第一個數字是正確答案)</p>
+                        <strong>【正確範例】 (請這樣寫)</strong>
+                        <p style="color:#2e7d32;"><code>2 x 1 = 2,3,4</code></p>
+                        <p style="font-size:0.8em;">(系統會自動顯示成 2 x 1 = ?，且答案是 2)</p>
                     </div>
-                    <div style="flex:1; background:white; padding:10px; border-radius:5px;">
-                        <strong>【填空題格式】</strong>
-                        <p style="color:#666; font-size:0.9em;"><code>題目 = 正確答案</code></p>
-                        <p style="color:#2e7d32;">範例：<code>2 x 1 = ? = 2</code></p>
-                        <p style="font-size:0.8em;">(學生必須按鍵盤輸入數字 2)</p>
+                    <div style="flex:1; background:#ffebee; padding:10px; border-radius:5px;">
+                        <strong>【錯誤範例】 (請勿模仿)</strong>
+                        <p style="color:#d32f2f;"><code>2 x 1 = ? = 2,3,4</code></p>
+                        <p style="font-size:0.8em;">(不要多打問號，否則電腦會判斷錯誤)</p>
                     </div>
                 </div>
             </div>
@@ -200,53 +197,53 @@
             { name: "鳳凰",           img: "reward_lv9_phoenix.PNG" }      
         ];
 
-        // --- 預設題庫 (九九乘法表 - 每一關對應一個數字) ---
+        // --- 預設題庫 (修正後的資料：拿掉中間的 ? 和 =) ---
         let defaultQuestionBank = {
-            1: [ // 2的乘法 (第一關)
-                "2 x 1 = ? = 2,3,4", "2 x 2 = ? = 4,2,6", "2 x 3 = ? = 6,8,4", 
-                "2 x 4 = ? = 8,6,10", "2 x 5 = ? = 10,12,8", "2 x 6 = ? = 12,14,10", 
-                "2 x 7 = ? = 14,12,16", "2 x 8 = ? = 16,18,14", "2 x 9 = ? = 18,16,20"
+            1: [ // 2的乘法
+                "2 x 1 = 2,3,4", "2 x 2 = 4,2,6", "2 x 3 = 6,8,4", 
+                "2 x 4 = 8,6,10", "2 x 5 = 10,12,8", "2 x 6 = 12,14,10", 
+                "2 x 7 = 14,12,16", "2 x 8 = 16,18,14", "2 x 9 = 18,16,20"
             ],
-            2: [ // 3的乘法 (第二關)
-                "3 x 1 = ? = 3,2,4", "3 x 2 = ? = 6,3,9", "3 x 3 = ? = 9,6,12", 
-                "3 x 4 = ? = 12,9,15", "3 x 5 = ? = 15,12,18", "3 x 6 = ? = 18,15,21", 
-                "3 x 7 = ? = 21,18,24", "3 x 8 = ? = 24,21,27", "3 x 9 = ? = 27,24,30"
+            2: [ // 3的乘法
+                "3 x 1 = 3,2,4", "3 x 2 = 6,3,9", "3 x 3 = 9,6,12", 
+                "3 x 4 = 12,9,15", "3 x 5 = 15,12,18", "3 x 6 = 18,15,21", 
+                "3 x 7 = 21,18,24", "3 x 8 = 24,21,27", "3 x 9 = 27,24,30"
             ],
-            3: [ // 4的乘法 (第三關)
-                "4 x 1 = ? = 4,2,6", "4 x 2 = ? = 8,4,12", "4 x 3 = ? = 12,8,16", 
-                "4 x 4 = ? = 16,12,20", "4 x 5 = ? = 20,16,24", "4 x 6 = ? = 24,20,28", 
-                "4 x 7 = ? = 28,24,32", "4 x 8 = ? = 32,28,36", "4 x 9 = ? = 36,32,40"
+            3: [ // 4的乘法
+                "4 x 1 = 4,2,6", "4 x 2 = 8,4,12", "4 x 3 = 12,8,16", 
+                "4 x 4 = 16,12,20", "4 x 5 = 20,16,24", "4 x 6 = 24,20,28", 
+                "4 x 7 = 28,24,32", "4 x 8 = 32,28,36", "4 x 9 = 36,32,40"
             ],
-            4: [ // 5的乘法 (第四關)
-                "5 x 1 = ? = 5,4,6", "5 x 2 = ? = 10,5,15", "5 x 3 = ? = 15,10,20", 
-                "5 x 4 = ? = 20,15,25", "5 x 5 = ? = 25,20,30", "5 x 6 = ? = 30,25,35", 
-                "5 x 7 = ? = 35,30,40", "5 x 8 = ? = 40,35,45", "5 x 9 = ? = 45,40,50"
+            4: [ // 5的乘法
+                "5 x 1 = 5,4,6", "5 x 2 = 10,5,15", "5 x 3 = 15,10,20", 
+                "5 x 4 = 20,15,25", "5 x 5 = 25,20,30", "5 x 6 = 30,25,35", 
+                "5 x 7 = 35,30,40", "5 x 8 = 40,35,45", "5 x 9 = 45,40,50"
             ],
-            5: [ // 6的乘法 (第五關)
-                "6 x 1 = ? = 6,5,7", "6 x 2 = ? = 12,6,18", "6 x 3 = ? = 18,12,24", 
-                "6 x 4 = ? = 24,18,30", "6 x 5 = ? = 30,24,36", "6 x 6 = ? = 36,30,42", 
-                "6 x 7 = ? = 42,36,48", "6 x 8 = ? = 48,42,54", "6 x 9 = ? = 54,48,60"
+            5: [ // 6的乘法
+                "6 x 1 = 6,5,7", "6 x 2 = 12,6,18", "6 x 3 = 18,12,24", 
+                "6 x 4 = 24,18,30", "6 x 5 = 30,24,36", "6 x 6 = 36,30,42", 
+                "6 x 7 = 42,36,48", "6 x 8 = 48,42,54", "6 x 9 = 54,48,60"
             ],
-            6: [ // 7的乘法 (第六關)
-                "7 x 1 = ? = 7,6,8", "7 x 2 = ? = 14,7,21", "7 x 3 = ? = 21,14,28", 
-                "7 x 4 = ? = 28,21,35", "7 x 5 = ? = 35,28,42", "7 x 6 = ? = 42,35,49", 
-                "7 x 7 = ? = 49,42,56", "7 x 8 = ? = 56,49,63", "7 x 9 = ? = 63,56,70"
+            6: [ // 7的乘法
+                "7 x 1 = 7,6,8", "7 x 2 = 14,7,21", "7 x 3 = 21,14,28", 
+                "7 x 4 = 28,21,35", "7 x 5 = 35,28,42", "7 x 6 = 42,35,49", 
+                "7 x 7 = 49,42,56", "7 x 8 = 56,49,63", "7 x 9 = 63,56,70"
             ],
-            7: [ // 8的乘法 (第七關)
-                "8 x 1 = ? = 8,7,9", "8 x 2 = ? = 16,8,24", "8 x 3 = ? = 24,16,32", 
-                "8 x 4 = ? = 32,24,40", "8 x 5 = ? = 40,32,48", "8 x 6 = ? = 48,40,56", 
-                "8 x 7 = ? = 56,48,64", "8 x 8 = ? = 64,56,72", "8 x 9 = ? = 72,64,80"
+            7: [ // 8的乘法
+                "8 x 1 = 8,7,9", "8 x 2 = 16,8,24", "8 x 3 = 24,16,32", 
+                "8 x 4 = 32,24,40", "8 x 5 = 40,32,48", "8 x 6 = 48,40,56", 
+                "8 x 7 = 56,48,64", "8 x 8 = 64,56,72", "8 x 9 = 72,64,80"
             ],
-            8: [ // 9的乘法 (第八關)
-                "9 x 1 = ? = 9,8,10", "9 x 2 = ? = 18,9,27", "9 x 3 = ? = 27,18,36", 
-                "9 x 4 = ? = 36,27,45", "9 x 5 = ? = 45,36,54", "9 x 6 = ? = 54,45,63", 
-                "9 x 7 = ? = 63,54,72", "9 x 8 = ? = 72,63,81", "9 x 9 = ? = 81,72,90"
+            8: [ // 9的乘法
+                "9 x 1 = 9,8,10", "9 x 2 = 18,9,27", "9 x 3 = 27,18,36", 
+                "9 x 4 = 36,27,45", "9 x 5 = 45,36,54", "9 x 6 = 54,45,63", 
+                "9 x 7 = 63,54,72", "9 x 8 = 72,63,81", "9 x 9 = 81,72,90"
             ],
-            9: [ // 第九關 (混合/倒敘/進階)
-                "9 x 9 = ? = 81,72,64", "9 x 8 = ? = 72,63,81", "9 x 7 = ? = 63,56,72", 
-                "8 x 9 = ? = 72,64,80", "8 x 8 = ? = 64,56,72", "8 x 7 = ? = 56,49,64", 
-                "7 x 7 = ? = 49,42,56", "7 x 8 = ? = 56,49,63", "7 x 9 = ? = 63,54,72", 
-                "6 x 9 = ? = 54,48,60"
+            9: [ // 第九關
+                "9 x 9 = 81,72,64", "9 x 8 = 72,63,81", "9 x 7 = 63,56,72", 
+                "8 x 9 = 72,64,80", "8 x 8 = 64,56,72", "8 x 7 = 56,49,64", 
+                "7 x 7 = 49,42,56", "7 x 8 = 56,49,63", "7 x 9 = 63,54,72", 
+                "6 x 9 = 54,48,60"
             ]
         };
 
@@ -280,12 +277,12 @@
                         <div class="editor-example-area">
                             <strong>💡 範例參考：</strong>
                             <div class="example-row">
-                                <span class="ex-code">2 x 1 = ? = 2,3,4</span>
-                                <span class="ex-desc">乘法選擇題</span>
+                                <span class="ex-code">2 x 1 = 2,3,4</span>
+                                <span class="ex-desc">選擇題</span>
                             </div>
                             <div class="example-row">
-                                <span class="ex-code">1+1=? = 2</span>
-                                <span class="ex-desc">填空題 (無選項)</span>
+                                <span class="ex-code">2 x 1 = 2</span>
+                                <span class="ex-desc">填空題</span>
                             </div>
                         </div>
                     </div>
@@ -377,28 +374,7 @@
 
         function parseQuestionStr(qStr) {
             const parts = qStr.split('=');
-            const qText = parts[0].trim();
-            const answerPart = parts[1] ? parts[1].trim() : "";
-
-            // 檢查答案部分是否有逗號 (代表是選擇題)
-            if (answerPart.includes(',')) {
-                const options = answerPart.split(',').map(s => s.trim());
-                const correct = options[0]; // 第一個是正確答案
-                return {
-                    text: qText,
-                    correct: correct,
-                    type: 'choice',
-                    options: shuffleArray(options) // 打亂選項
-                };
-            } else {
-                // 沒有逗號，代表是填空題
-                return {
-                    text: qText,
-                    correct: answerPart,
-                    type: 'input',
-                    options: []
-                };
-            }
+            return { text: parts[0], correct: parts[1], type: (parts.length > 2 && parts[2].trim() !== "") ? 'choice' : 'input', options: (parts.length > 2) ? shuffleArray([parts[1], ...parts[2].split(',')]) : [] };
         }
 
         function loadNextQuestion() {
@@ -406,8 +382,17 @@
             if (gameState.currentQuestionIndex >= gameState.questionsInCurrentLevel.length) { levelComplete(); return; }
             const currentQ = gameState.questionsInCurrentLevel[gameState.currentQuestionIndex];
             
-            // 處理填空底線，讓題目中的 _____ 變成漂亮的底線
+            // 處理填空底線
             let displayText = currentQ.text.replace(/_____/g, '<span style="border-bottom: 3px solid var(--primary-color); display:inline-block; width:80px;">&nbsp;</span>');
+            
+            // 【關鍵修改】智慧判斷：如果題目看起來像數學算式，但沒有等號，自動補上 " = ?"
+            if (!displayText.includes('=') && !displayText.includes('?')) {
+                // 檢查是否包含數字和運算符
+                if (/[\d]/.test(displayText) && (displayText.includes('x') || displayText.includes('+') || displayText.includes('-'))) {
+                    displayText += " = ?";
+                }
+            }
+            
             questionText.innerHTML = displayText;
 
             if (currentQ.type === 'choice') {
